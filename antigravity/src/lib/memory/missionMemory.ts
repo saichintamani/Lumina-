@@ -72,7 +72,26 @@ export const useMissionMemory = create<MissionState>((set) => ({
 
   // Initial Knowledge & Decision State
   ingestedDocuments: [],
-  decisionHistory: [],
+  decisionHistory: [
+    {
+      id: 'DEC-ORBIT-INIT',
+      what: 'Orbital Insertion Parameters Validated',
+      why: 'Current trajectory aligns with the nominal Faustini Crater approach corridor.',
+      evidence: ['Telemetry bus confirms nominal velocity.', 'LRO DEM data confirms obstacle clearance.'],
+      confidence: 0.98,
+      assumptions: ['No unexpected gravitational anomalies.', 'Sensors operating within thermal limits.'],
+      limitations: ['Cannot account for micro-meteoroid impacts in real-time.']
+    },
+    {
+      id: 'DEC-TARGET-SEL',
+      what: 'Landing Zone FAUSTINI-F2 Locked',
+      why: 'Region F2 offers the optimal balance of continuous illumination and low surface roughness.',
+      evidence: ['Hazard map indicates <10deg slope.', 'Solar illumination model predicts >80% uptime.'],
+      confidence: 0.92,
+      assumptions: ['Surface bearing capacity is similar to Apollo 15 site.'],
+      limitations: ['Regolith depth remains unverified until physical touchdown.']
+    }
+  ],
   simulationResults: [],
 
   // Mutators

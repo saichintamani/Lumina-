@@ -94,15 +94,45 @@ function MoonModel() {
         />
       )}
 
-      {/* Faustini Crater Marker (South Pole ~85S, 30E) */}
+      {/* Scientific Region Markers */}
       {currentPhase !== 'INITIALIZING' && (
-        <group position={[0, -1.48, 0.2]}> {/* Approximate WebGL coord for Faustini */}
-          <Html center>
-            <div className="flex flex-col items-center">
-              <div className="w-4 h-4 rounded-full border-2 border-green-500 bg-green-500/20 animate-ping" />
-              <div className="text-[10px] font-mono text-green-400 mt-1 bg-slate-900/80 px-2 py-0.5 rounded backdrop-blur">FAUSTINI (F2)</div>
-            </div>
-          </Html>
+        <group>
+          {/* Faustini Crater (South Pole ~85S, 30E) */}
+          <group position={[0, -1.48, 0.2]}>
+            <Sphere args={[0.02, 16, 16]}>
+              <meshBasicMaterial color="#3b82f6" />
+            </Sphere>
+            <Html center position={[0, -0.05, 0]}>
+              <div className="bg-black/80 border border-blue-500/50 backdrop-blur p-2 rounded shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                <p className="text-[10px] font-mono font-bold text-blue-400 whitespace-nowrap">FAUSTINI F2 (PRIMARY)</p>
+                <p className="text-[8px] font-mono text-slate-400">85.4°S, 30.1°E</p>
+              </div>
+            </Html>
+          </group>
+
+          {/* Shackleton Crater (South Pole ~89S, 0E) */}
+          <group position={[0, -1.495, 0]}>
+            <Sphere args={[0.015, 16, 16]}>
+              <meshBasicMaterial color="#eab308" />
+            </Sphere>
+            <Html center position={[0, -0.05, 0]}>
+              <div className="bg-black/80 border border-yellow-500/50 backdrop-blur p-1.5 rounded opacity-70 hover:opacity-100 transition-opacity">
+                <p className="text-[9px] font-mono font-bold text-yellow-400 whitespace-nowrap">SHACKLETON (PSR)</p>
+              </div>
+            </Html>
+          </group>
+
+          {/* Malapert Massif (South Pole ~85S, 11E) */}
+          <group position={[-0.1, -1.47, 0.1]}>
+            <Sphere args={[0.015, 16, 16]}>
+              <meshBasicMaterial color="#10b981" />
+            </Sphere>
+            <Html center position={[0, -0.05, 0]}>
+              <div className="bg-black/80 border border-green-500/50 backdrop-blur p-1.5 rounded opacity-70 hover:opacity-100 transition-opacity">
+                <p className="text-[9px] font-mono font-bold text-green-400 whitespace-nowrap">MALAPERT MASSIF</p>
+              </div>
+            </Html>
+          </group>
         </group>
       )}
 

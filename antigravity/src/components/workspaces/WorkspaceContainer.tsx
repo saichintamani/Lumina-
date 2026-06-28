@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import MissionWorkspace from '@/components/mission-control/MissionWorkspace';
 import ScientificAnalysisWorkspace from '@/components/workspaces/ScientificAnalysisWorkspace';
 import ResearchWorkspace from '@/components/workspaces/ResearchWorkspace';
+import AIOrchestrator from '@/components/intelligence/AIOrchestrator';
 import { LayoutDashboard, Microscope, BookOpen, Settings } from 'lucide-react';
 
 type WorkspaceType = 'MISSION' | 'SCIENCE' | 'RESEARCH';
@@ -13,6 +14,7 @@ export default function WorkspaceContainer() {
 
   return (
     <div className="w-screen h-screen bg-black flex overflow-hidden font-sans">
+      <AIOrchestrator />
       
       {/* Sidebar Navigation */}
       <div className="w-16 bg-[#030712] border-r border-slate-800 flex flex-col items-center py-6 gap-8 z-50">

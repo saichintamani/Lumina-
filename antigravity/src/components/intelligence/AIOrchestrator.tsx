@@ -1,0 +1,66 @@
+"use client";
+
+import { useEffect, useRef } from 'react';
+import { useCinematicEngine } from '@/lib/memory/cinematicEngine';
+import { useMissionMemory } from '@/lib/memory/missionMemory';
+
+export default function AIOrchestrator() {
+  const { currentPhase } = useCinematicEngine();
+  const { recordDecision } = useMissionMemory();
+  const lastPhase = useRef(currentPhase);
+
+  useEffect(() => {
+    if (currentPhase === lastPhase.current) return;
+    lastPhase.current = currentPhase;
+
+    // Simulate AI thinking time
+    const timer = setTimeout(() => {
+      switch (currentPhase) {
+        case 'RADAR_ACQUISITION':
+          recordDecision({
+            what: 'Initiated Synthetic Aperture Radar (SAR) Sweep',
+            why: 'High-resolution surface scattering data is required to penetrate the permanently shadowed region (PSR).',
+            evidence: ['Visual spectrum cameras are ineffective in PSRs.', 'Historical data suggests ice deposits in high-scattering zones.'],
+            confidence: 0.96,
+            assumptions: ['SAR antenna is deployed correctly.'],
+            limitations: ['Sweep consumes 15% of available power budget.']
+          });
+          break;
+        case 'TERRAIN_GENERATION':
+          recordDecision({
+            what: 'Generating High-Fidelity 3D Terrain Mesh',
+            why: 'Mission planning requires a localized Digital Elevation Model (DEM) with 1-meter resolution.',
+            evidence: ['LOLA data interpolation completed.', 'SAR point cloud merged with elevation map.'],
+            confidence: 0.88,
+            assumptions: ['No significant terrain changes since last LRO pass.'],
+            limitations: ['Mesh generation is computationally expensive, lowering UI frame rate temporarily.']
+          });
+          break;
+        case 'TRAVERSE_PLANNING':
+          recordDecision({
+            what: 'Calculated Optimal A* Traverse Route',
+            why: 'Rover must reach waypoint Alpha while avoiding slopes > 15 degrees and maintaining solar contact.',
+            evidence: ['Slope hazard map generated.', 'Solar illumination vectors computed for next 72 hours.'],
+            confidence: 0.94,
+            assumptions: ['Rover traction model is accurate.'],
+            limitations: ['Path does not account for sub-meter rocks or loose regolith.']
+          });
+          break;
+        case 'MISSION_SUCCESS':
+          recordDecision({
+            what: 'Transitioned to Autonomous Surface Execution',
+            why: 'All planning phases completed successfully. Handing over control to local rover autonomy.',
+            evidence: ['Traverse plan validated by Earth ground control.', 'Battery levels nominal.'],
+            confidence: 0.99,
+            assumptions: ['Communications link will remain stable.'],
+            limitations: ['Earth-Moon latency prevents real-time manual override.']
+          });
+          break;
+      }
+    }, 2000); // 2 second thinking delay
+
+    return () => clearTimeout(timer);
+  }, [currentPhase, recordDecision]);
+
+  return null; // Headless component
+}

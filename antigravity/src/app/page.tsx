@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import MoonScene from "@/components/visualization/MoonScene";
+import TelemetryDashboard from "@/components/visualization/TelemetryDashboard";
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -121,12 +122,8 @@ export default function Home() {
               <p className="text-xs text-slate-500 font-mono mt-auto">AWAITING NEURAL NET INITIALIZATION</p>
             </div>
             
-            <div className="col-span-2 glass-panel p-6 h-96 flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
-              <div className="text-center z-10">
-                <h3 className="text-2xl font-mono text-white mb-2">A* ROVER TRAVERSE SIMULATION</h3>
-                <p className="text-blue-400 font-mono text-sm">INTERACT WITH 3D VIEWPORT</p>
-              </div>
+            <div className="col-span-2 h-96 flex items-center justify-center relative overflow-hidden">
+              <TelemetryDashboard />
             </div>
           </div>
         </motion.section>

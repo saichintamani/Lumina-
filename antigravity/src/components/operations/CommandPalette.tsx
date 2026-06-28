@@ -13,7 +13,7 @@ export default function CommandPalette() {
   const { jumpToPhase } = useCinematicEngine();
   const { recordDecision, decisionHistory } = useMissionMemory();
   const { activeScenarioId, scenarios } = useScenarioManager();
-  const { triggerSolarFlare, resolveSolarFlare, spaceWeather } = useTelemetryStore();
+  const { triggerSolarFlare, resolveSolarFlare, spaceWeather, swarmActive, toggleSwarm } = useTelemetryStore();
 
   // Toggle the menu when Cmd+K or Ctrl+K is pressed
   useEffect(() => {
@@ -146,6 +146,24 @@ export default function CommandPalette() {
                   <Activity size={14} className="mr-3 text-green-500" /> Resolve Solar Flare Event
                 </Command.Item>
               )}
+
+              <Command.Item 
+                onSelect={() => {
+                  toggleSwarm();
+                  recordDecision({
+                    what: swarmActive ? 'Recalled Micro-Rover Swarm' : 'Deployed Micro-Rover Swarm',
+                    why: 'Autonomous distributed mapping using Boids algorithm.',
+                    evidence: ['Complex crater topology requires distributed sensing.', 'Primary rover cannot safely navigate steep rims.'],
+                    confidence: 0.95,
+                    assumptions: ['Swarm battery reserves are sufficient.'],
+                    limitations: ['Swarm data downlinks consume high bandwidth.']
+                  });
+                  setOpen(false);
+                }}
+                className={`flex items-center px-2 py-3 rounded cursor-pointer font-mono text-sm ${swarmActive ? 'hover:bg-red-500/20 text-slate-300 hover:text-red-400' : 'hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-400'}`}
+              >
+                <Cpu size={14} className={`mr-3 ${swarmActive ? 'text-red-500' : 'text-cyan-500'}`} /> {swarmActive ? 'Recall' : 'Deploy'} Autonomous Swarm (Boids)
+              </Command.Item>
             </Command.Group>
             
           </Command.List>

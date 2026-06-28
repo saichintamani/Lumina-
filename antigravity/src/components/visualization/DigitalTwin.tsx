@@ -10,6 +10,7 @@ import gsap from 'gsap';
 import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
 import { useRoverControls } from '@/lib/controls/useRoverControls';
 import LunarDustEngine from './LunarDustEngine';
+import RoverSwarm from './RoverSwarm';
 
 // ----------------------------------------------------
 // Cinematic Camera Controller
@@ -378,6 +379,7 @@ export default function DigitalTwin() {
           </Html>
         }>
           <MoonModel />
+          <RoverSwarm />
         </React.Suspense>
         
         <CinematicCameraController />

@@ -1,85 +1,364 @@
 <div align="center">
-  <img src="public/lumina_logo.png" alt="Lumina Logo" width="300" />
 
-  # **LUMINA: LUNAR DIGITAL TWIN**
+<img src="public/lumina_logo.png" width="180" alt="Lumina Logo"/>
 
-  <p align="center">
-    <strong>A Production-Ready Space Mission Intelligence Platform</strong>
-  </p>
-  
-  <p align="center">
-    <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
-    <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" />
-    <img src="https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=three.js&logoColor=white" />
-    <img src="https://img.shields.io/badge/Zustand-F15C3D?style=for-the-badge&logo=redux&logoColor=white" />
-    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
-  </p>
+<br/>
+
+```
+██╗     ██╗   ██╗███╗   ███╗██╗███╗   ██╗ █████╗
+██║     ██║   ██║████╗ ████║██║████╗  ██║██╔══██╗
+██║     ██║   ██║██╔████╔██║██║██╔██╗ ██║███████║
+██║     ██║   ██║██║╚██╔╝██║██║██║╚██╗██║██╔══██║
+███████╗╚██████╔╝██║ ╚═╝ ██║██║██║ ╚████║██║  ██║
+╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
+```
+
+### **LUNAR DIGITAL TWIN · MISSION INTELLIGENCE PLATFORM**
+
+*Next-generation autonomous swarm navigation, explainable AI reasoning, and real-time spectroscopy — designed for the Moon.*
+
+<br/>
+
+[![Deploy](https://img.shields.io/badge/🌐_LIVE_DEMO-Visit_Platform-00C7FF?style=for-the-badge&logoColor=white)](https://antigravity-faxkdjo57-sai-chintamanis-projects.vercel.app/)
+[![Mission Control](https://img.shields.io/badge/🛸_MISSION_CONTROL-Enter_Dashboard-6366F1?style=for-the-badge)](https://antigravity-faxkdjo57-sai-chintamanis-projects.vercel.app/mission-control)
+[![ISRO](https://img.shields.io/badge/🇮🇳_ISRO-Chandrayaan_Research-FF6B35?style=for-the-badge)](https://www.isro.gov.in/)
+
+<br/>
+
+![GitHub last commit](https://img.shields.io/github/last-commit/saichintamani/Lumina-?color=00C7FF&style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/saichintamani/Lumina-?color=6366F1&style=flat-square)
+![GitHub stars](https://img.shields.io/github/stars/saichintamani/Lumina-?color=FFD700&style=flat-square)
+![GitHub forks](https://img.shields.io/github/forks/saichintamani/Lumina-?color=00C7FF&style=flat-square)
 
 </div>
 
 ---
 
-## 🌌 Mission Brief
+## 🌌 What is Lumina?
 
-Operating on the Lunar South Pole (Faustini Crater) introduces monumental engineering challenges: extreme thermal variance, unpredictable regolith terrain, and Earth-Moon communication latency. **Lumina** is built to synthesize these complex variables into an immersive, explainable, and interactive Mission Control dashboard. 
+> *"We don't just simulate the Moon. We think about it."*
 
-Instead of risking a single billion-dollar asset, Lumina simulates a multi-agent autonomous swarm of micro-rovers, mapping the lunar surface in parallel, orchestrated by an explainable AI system.
+**Lumina** is a browser-native, production-ready **Lunar Mission Digital Twin** — a real-time simulation platform that mirrors the exact conditions at **Faustini Crater**, Lunar South Pole. It combines autonomous multi-agent robotics, an explainable AI orchestrator, volumetric science instruments, and a cinematic narrative UX into a single, unified Mission Control environment.
 
----
-
-## 🏗️ The Architecture (Theoretical Deep Dive)
-
-Lumina's underlying architecture is designed for immense scale and 60 FPS performance within the browser.
-
-### 1. The Boids Swarm Physics Engine
-The heart of the micro-rover simulation relies on the **Boids Algorithm**, an artificial life simulation that dictates three emergent behaviors:
-- **Separation**: Rovers steer to avoid crowding local flockmates (preventing collisions).
-- **Alignment**: Rovers steer towards the average heading of local flockmates (coordinated traversal).
-- **Cohesion**: Rovers steer to move towards the average position of local flockmates (staying together in the crater).
-This physics engine updates the 3D transforms of an `InstancedMesh` via a `useFrame` loop, pushing rendering performance to the absolute limit.
-
-### 2. Decoupled Rendering State (Zustand)
-To ensure the React component tree does not bottleneck the WebGL context, all physical simulation state is entirely decoupled from the React render lifecycle. 
-- Using `useTelemetryStore`, the telemetry data (Battery, Thermal Variance, Solar Array Efficiency) acts as a high-speed data stream.
-- The 3D models read directly from this store via transient subscriptions, ensuring `DigitalTwin` does not trigger expensive DOM recalculations.
-
-### 3. AI Intelligence Orchestrator
-The platform isn't just a viewer—it thinks. The `AIOrchestrator` continuously samples the telemetry store. When a state variable breaches safety thresholds (e.g., a massive Coronal Mass Ejection causing thermal spikes), the AI injects a real-time Explanation Card into the UI, providing the user with *Assumptions*, *Supporting Evidence*, and a *Confidence Score*.
+Built on findings from **Chandrayaan-2's DFSAR radar** and informed by ISRO's South Polar exploration objectives, Lumina bridges the gap between raw planetary science and operational decision-making.
 
 ---
 
-## 🚀 Key Features & Segments
+## 🚀 Tech Stack
 
-- **Interactive 3D Simulation**: A high-fidelity WebGL digital twin powered by `react-three-fiber`. View the lunar surface in orbital mode or dive into the First-Person NavCam.
-- **Machine Learning CV HUD**: Drop down into the rover's First-Person view. Real-time simulated bounding boxes scan the regolith for "Slopes > 15 Degrees" and "Thermal Variance" anomalies.
-- **Earth-Moon Latency Simulator**: Accurately simulates the 2.6-second round-trip delay between Earth and the Moon. Commands you issue are buffered in the UI before execution on the 3D surface.
-- **Demonstration Mode**: A built-in Presentation overlay that guides users through a 9-stage interactive tour of the platform's capabilities with a single click.
-
----
-
-## ⚙️ How to Execute (Local Usage)
-
-To step into Mission Control locally, you need Node.js (v18+) installed.
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/lumina.git
-   cd lumina
-   ```
-2. **Install the dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Ignite the development server:**
-   ```bash
-   npm run dev
-   ```
-4. **Access the Twin**: Open `http://localhost:3000/mission-control` in your browser.
-
-> **Pro Tip**: Once loaded, press `Cmd+K` (or `Ctrl+K`) to open the Command Palette. This acts as your terminal for triggering Solar Flares, deploying the Rover Swarm, or toggling the Latency Simulator.
-
----
 <div align="center">
-  <i>"Ad astra per aspera"</i><br/>
-  <b>Built for Presentation Excellence & Production Readiness.</b>
+
+### Core Platform
+![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+### 3D & Visualization Engine
+![Three.js](https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=three.js&logoColor=white)
+![React Three Fiber](https://img.shields.io/badge/R3F-FF6B6B?style=for-the-badge&logo=react&logoColor=white)
+![React Three Drei](https://img.shields.io/badge/Drei-00C7FF?style=for-the-badge&logo=react&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
+
+### AI / ML Intelligence Layer
+![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+![ONNX Runtime](https://img.shields.io/badge/ONNX_Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
+![LlamaIndex](https://img.shields.io/badge/LlamaIndex-7C3AED?style=for-the-badge&logoColor=white)
+
+### Geospatial & Mapping
+![Deck.gl](https://img.shields.io/badge/Deck.gl-000000?style=for-the-badge&logo=mapbox&logoColor=00C7FF)
+![MapLibre](https://img.shields.io/badge/MapLibre_GL-396CB2?style=for-the-badge&logo=maplibre&logoColor=white)
+![OpenLayers](https://img.shields.io/badge/OpenLayers-1F6B75?style=for-the-badge&logoColor=white)
+![Cesium](https://img.shields.io/badge/CesiumJS-4FC3F7?style=for-the-badge&logo=cesium&logoColor=white)
+
+### State & Audio
+![Zustand](https://img.shields.io/badge/Zustand-F15C3D?style=for-the-badge&logoColor=white)
+![Web Audio API](https://img.shields.io/badge/Web_Audio_API-FF4081?style=for-the-badge&logoColor=white)
+![GSAP](https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=black)
+
+### Deployment
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+
+</div>
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TB
+    subgraph CLIENT["🌐 Browser Client (Next.js 16 App Router)"]
+        LP["🚀 Landing Page<br/>Scroll-Driven Narrative<br/>Framer Motion"]
+        MC["🛸 Mission Control<br/>Real-Time Dashboard"]
+        SCI["🔬 Science Workspace<br/>Spectroscopy Panel"]
+        OPS["⚙️ Operations Hub<br/>Command & Workflow Engine"]
+    end
+
+    subgraph RENDER["🎮 WebGL Rendering Layer (React Three Fiber)"]
+        DT["🌕 Digital Twin<br/>InstancedMesh + ShaderMaterial"]
+        SWARM["🤖 Boids Swarm Engine<br/>64 Autonomous Micro-Rovers"]
+        DUST["🌫️ Lunar Dust Engine<br/>GPU Particle System"]
+        NAVCAM["📸 NavCam First-Person<br/>CV HUD Overlay"]
+        SCENE["🌌 Moon Scene<br/>Displacement Map + PBR"]
+    end
+
+    subgraph AI["🧠 AI Intelligence Layer"]
+        ORCH["🎯 AI Orchestrator<br/>Threshold Monitor"]
+        EXPL["💡 Explanation Cards<br/>Assumptions + Confidence"]
+        LATENCY["⏱️ Latency Simulator<br/>2.6s Earth-Moon Delay"]
+        CINE["🎬 Cinematic Engine<br/>Camera Choreography"]
+    end
+
+    subgraph STATE["⚡ State Architecture (Zustand)"]
+        TELEM["📡 Telemetry Store<br/>Battery / Thermal / Solar"]
+        MEM["🧩 Mission Memory<br/>Persistent Event Log"]
+        PRES["🎭 Presentation Store<br/>9-Stage Demo Mode"]
+        SCENARIO["🌪️ Scenario Manager<br/>Solar Flare / CME Events"]
+    end
+
+    subgraph PHYSICS["⚛️ Physics & Algorithms"]
+        BOIDS["🔢 Boids Algorithm<br/>Separation · Alignment · Cohesion"]
+        AUDIO["🔊 Telemetry Audio<br/>Web Audio API Synthesis"]
+        REPLAY["▶️ Replay Engine<br/>Time-travel Telemetry"]
+    end
+
+    LP --> MC
+    MC --> DT
+    MC --> SWARM
+    MC --> NAVCAM
+    DT --> DUST
+    SWARM --> BOIDS
+    ORCH --> EXPL
+    ORCH --> TELEM
+    TELEM --> DT
+    TELEM --> AUDIO
+    CINE --> SCENE
+    PRES --> MC
+    SCENARIO --> TELEM
+    LATENCY --> NAVCAM
+    MEM --> REPLAY
+
+    style CLIENT fill:#0d1117,stroke:#00C7FF,color:#fff
+    style RENDER fill:#0d1117,stroke:#6366F1,color:#fff
+    style AI fill:#0d1117,stroke:#FF6B35,color:#fff
+    style STATE fill:#0d1117,stroke:#FFD700,color:#fff
+    style PHYSICS fill:#0d1117,stroke:#00FF88,color:#fff
+```
+
+---
+
+## 🔬 Scientific Workflow
+
+```mermaid
+sequenceDiagram
+    participant ISS as 🛰️ Chandrayaan-2 DFSAR
+    participant SIM as 🌕 Lumina Simulator
+    participant AI as 🧠 AI Orchestrator
+    participant SWARM as 🤖 Rover Swarm (×64)
+    participant SCI as 🔬 Science Workspace
+    participant OPS as 👨‍💻 Mission Controller
+
+    ISS->>SIM: Radar elevation + ice-signature datasets
+    SIM->>AI: Initialize telemetry stream (60 FPS)
+    AI->>AI: Monitor thresholds (Thermal / Battery / Solar)
+    AI-->>OPS: Inject Explanation Card (CME detected)
+    OPS->>SWARM: Deploy swarm to Faustini Crater
+    SWARM->>SWARM: Boids: Separation + Alignment + Cohesion
+    SWARM->>SCI: Transmit spectroscopy readings
+    SCI->>SCI: Render X-Ray volumetric simulation
+    SCI-->>OPS: Mineral composition analysis
+    OPS->>SIM: Issue rover command (2.6s latency buffer)
+    SIM-->>OPS: Cinematic camera choreography
+    note over OPS,SIM: 9-Stage Demonstration Mode activated
+```
+
+---
+
+## ✨ What Makes Lumina Unique
+
+<table>
+<tr>
+<td width="50%">
+
+### 🤖 Autonomous Boids Swarm
+64 micro-rovers running **Craig Reynolds' Boids Algorithm** in real-time inside the browser — separation, alignment, cohesion — all rendered as `InstancedMesh` at 60 FPS via WebGL. No server. No pre-computation.
+
+</td>
+<td width="50%">
+
+### 🧠 Explainable AI Orchestrator
+The AI doesn't just act — it **explains itself**. When a Coronal Mass Ejection spikes thermal readings, the platform generates a structured reasoning card with Assumptions, Evidence, and a Confidence Score in real time.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### ⏱️ Earth-Moon Latency Simulator
+Physics-accurate **2.6-second round-trip delay** between Earth and the Moon. Commands are buffered in the HUD with visual uplink/downlink progress bars before the rover executes them on the 3D surface.
+
+</td>
+<td width="50%">
+
+### 🔬 Volumetric Spectroscopy
+The Science Workspace simulates an **X-Ray fluorescence spectrometer** — rendering sub-surface mineral composition data (Mg, Fe, Ca, Al) from Chandrayaan-2 observations in real time.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🎬 Cinematic Engine
+A fully scripted **camera choreography system** — the platform can transition from orbital overview to crater surface to rover first-person with smooth, cinematic keyframe interpolation.
+
+</td>
+<td width="50%">
+
+### 🎭 9-Stage Demo Mode
+Built-in **Presentation Mode** that guides audiences through the full mission — from Mission Introduction to AI Reasoning to Scenario Comparison — controllable with Prev/Next/Skip.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 📸 NavCam ML Computer Vision HUD
+Drop into the rover's first-person camera. Simulated **ML bounding boxes** scan the terrain, detecting slope hazards (>15°) and thermal anomalies with live confidence percentages.
+
+</td>
+<td width="50%">
+
+### ♟️ Mission Memory & Time-Travel
+Every telemetry event is logged to the **Mission Memory store**. The Replay Engine lets you scrub back through the mission history to any point in time, re-experiencing the simulation.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🗂️ Project Structure
+
+```
+lumina/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx                    # 🚀 Scroll-driven landing page
+│   │   ├── mission-control/page.tsx    # 🛸 Main dashboard
+│   │   ├── science/page.tsx            # 🔬 Science workspace
+│   │   └── operations/page.tsx         # ⚙️ Operations hub
+│   ├── components/
+│   │   ├── visualization/
+│   │   │   ├── DigitalTwin.tsx         # 🌕 Core 3D WebGL scene
+│   │   │   ├── RoverSwarm.tsx          # 🤖 Boids swarm (64 agents)
+│   │   │   ├── MoonScene.tsx           # 🌌 Scroll-linked lunar globe
+│   │   │   ├── LunarDustEngine.tsx     # 🌫️ GPU particle system
+│   │   │   └── ScientificDigitalTwin.tsx # 🔬 Science 3D view
+│   │   ├── intelligence/
+│   │   │   ├── AIOrchestrator.tsx      # 🧠 Threshold AI monitor
+│   │   │   └── ExplanationCard.tsx     # 💡 XAI reasoning UI
+│   │   ├── effects/
+│   │   │   ├── ComputerVisionHUD.tsx   # 📸 NavCam ML overlay
+│   │   │   ├── LatencyHUD.tsx          # ⏱️ Earth-Moon delay HUD
+│   │   │   └── GlitchOverlay.tsx       # ⚡ Solar flare visual FX
+│   │   ├── mission-control/
+│   │   │   ├── SubsystemHUD.tsx        # 📊 Battery/Thermal/Solar panels
+│   │   │   ├── MiniMapHUD.tsx          # 🗺️ Crater mini-map
+│   │   │   └── ReplayControls.tsx      # ▶️ Time-travel scrubber
+│   │   ├── presentation/
+│   │   │   └── DemonstrationMode.tsx   # 🎭 9-stage presenter UI
+│   │   └── operations/
+│   │       ├── CommandPalette.tsx      # ⌨️ Ctrl+K command terminal
+│   │       ├── WorkflowEngine.tsx      # 🔄 Mission workflow builder
+│   │       └── DataIngestion.tsx       # 📡 Data ingestion pipeline
+│   └── lib/
+│       ├── physics/boidsEngine.ts      # ⚛️ Reynolds Boids algorithm
+│       ├── memory/
+│       │   ├── useTelemetryStore.ts    # 📡 Zustand telemetry stream
+│       │   ├── missionMemory.ts        # 🧩 Event log persistence
+│       │   ├── cinematicEngine.ts      # 🎬 Camera choreography
+│       │   └── scenarioManager.ts      # 🌪️ CME/Flare scenario control
+│       ├── audio/
+│       │   ├── useTelemetryAudio.ts    # 🔊 Web Audio API synthesis
+│       │   └── useVoiceSynthesis.ts    # 🗣️ Mission voice announcements
+│       └── presentation/
+│           └── usePresentationStore.ts # 🎭 Demo mode state
+├── public/
+│   ├── lumina_logo.png                 # ✨ Gemini-generated logo
+│   └── moon_color.jpg                  # 🌕 Lunar surface texture
+├── vercel.json                         # 🚀 Production deployment config
+└── README.md                           # 📖 This file
+```
+
+---
+
+## ⚡ Quickstart
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/saichintamani/Lumina-.git
+cd Lumina-
+
+# 2. Install dependencies
+npm install
+
+# 3. Launch Mission Control
+npm run dev
+
+# 4. Open the platform
+#    Landing page:    http://localhost:3000
+#    Mission Control: http://localhost:3000/mission-control
+#    Science Lab:     http://localhost:3000/science
+```
+
+> 💡 **Pro Tip**: Once inside Mission Control, press `Ctrl+K` to open the **Command Palette** — your terminal for triggering Solar Flares, deploying the Rover Swarm, toggling the NavCam, or activating Demonstration Mode.
+
+---
+
+## 🎮 Key Controls
+
+| Action | Shortcut |
+|--------|----------|
+| Open Command Palette | `Ctrl+K` |
+| Deploy Rover Swarm | Command Palette → *Deploy Swarm* |
+| NavCam First-Person | Command Palette → *Toggle NavCam* |
+| Trigger Solar Flare | Command Palette → *Trigger Solar Flare* |
+| Earth-Moon Latency | Command Palette → *Enable Latency Sim* |
+| Demonstration Mode | Command Palette → *Start Presentation* |
+| Orbital Camera | Drag / Scroll on the 3D viewport |
+
+---
+
+## 🌍 Scientific Foundation
+
+| Data Source | Instrument | Parameter |
+|-------------|-----------|-----------|
+| Chandrayaan-2 | DFSAR (Dual-frequency SAR) | Sub-surface ice detection |
+| Chandrayaan-2 | CLASS (X-ray spectrometer) | Elemental composition |
+| LOLA / LRO | Laser Altimeter | Crater elevation model |
+| ISRO PRADAN | Polar Region Analysis | Thermal excursion mapping |
+| Faustini Crater | -85.46°S, 30.12°E | Primary mission target |
+
+---
+
+## 🏆 Recognition
+
+> Built as part of the **ISRO Space Application Research Program** — focusing on autonomous lunar exploration at the South Polar Region, inspired by findings from Chandrayaan-2 and the scientific groundwork laid for future crewed Moon missions.
+
+---
+
+<div align="center">
+
+### Built with ❤️ for the Moon
+
+**[🌐 Live Platform](https://antigravity-faxkdjo57-sai-chintamanis-projects.vercel.app/) · [🛸 Mission Control](https://antigravity-faxkdjo57-sai-chintamanis-projects.vercel.app/mission-control) · [🐙 GitHub](https://github.com/saichintamani/Lumina-)**
+
+<br/>
+
+*"Ad astra per aspera — through hardships to the stars."*
+
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=saichintamani.Lumina-)
+
 </div>

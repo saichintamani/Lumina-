@@ -48,11 +48,23 @@ export default function MissionWorkspace() {
       
       {/* Top Navbar */}
       <header className="h-12 border-b border-slate-800 bg-[#060b19] flex items-center justify-between px-4 shrink-0">
-        <div className="flex items-center gap-4">
-          <Link href="/operations" className="text-slate-400 hover:text-white transition-colors">
-            <Command size={18} />
-          </Link>
-          <span className="text-sm font-mono font-bold text-white tracking-widest">LUNAR DIGITAL TWIN // MISSION OPERATIONS</span>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <Link href="/operations" className="text-slate-400 hover:text-white transition-colors">
+              <Command size={18} />
+            </Link>
+            <span className="text-sm font-mono font-bold text-white tracking-widest">LUNAR DIGITAL TWIN // MISSION OPERATIONS</span>
+          </div>
+
+          {/* Workspace Tabs */}
+          <div className="flex gap-1 bg-slate-900/50 p-1 rounded">
+            <div className="px-3 py-1 text-xs font-mono text-white bg-slate-800 border border-slate-700 rounded font-bold shadow-[0_0_10px_rgba(255,255,255,0.05)]">
+              [ MISSION OPS ]
+            </div>
+            <Link href="/science" className="px-3 py-1 text-xs font-mono text-slate-500 hover:text-cyan-400 transition-colors rounded">
+              [ SCIENCE LAB ]
+            </Link>
+          </div>
         </div>
         <div className="flex items-center gap-4">
           <button 

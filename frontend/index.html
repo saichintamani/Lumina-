@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chandrayaan-3 | DFSAR Mission Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar glass-panel">
+            <div class="logo">
+                <h2>ISRO<span>C3</span></h2>
+                <p>Shiv Shakti Mission</p>
+            </div>
+            <ul class="nav-links">
+                <li class="active">Dashboard</li>
+                <li>DFSAR Radar</li>
+                <li>Ice Volume</li>
+                <li>Pragyan Traversal</li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="title-section">
+                    <h1>Mission Operations Center</h1>
+                    <p class="subtitle">Live from Shiv Shakti Point (69.373° S, 32.319° E)</p>
+                </div>
+                <div class="status-indicator">
+                    <span class="dot pulse"></span>
+                    Link Active
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Cosmos Chronicle Live Data -->
+                <div class="card glass-panel" id="cosmos-data">
+                    <h3>Environment Telemetry</h3>
+                    <div class="telemetry-grid">
+                        <div class="stat">
+                            <span class="label">Surface Temp</span>
+                            <span class="value" id="temp-val">-- K</span>
+                        </div>
+                        <div class="stat">
+                            <span class="label">Solar Elevation</span>
+                            <span class="value" id="solar-val">--°</span>
+                        </div>
+                        <div class="stat">
+                            <span class="label">Power Status</span>
+                            <span class="value success" id="power-val">Optimal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ice Volume Results -->
+                <div class="card glass-panel highlight-card">
+                    <h3>Lunar Ice Volume (Birchak Model)</h3>
+                    <div class="ice-stats">
+                        <div class="main-stat">
+                            <h2>12,450 <span class="unit">m³</span></h2>
+                            <p>Estimated Top-5m Subsurface Ice</p>
+                        </div>
+                        <div class="sub-stats">
+                            <p><strong>Confidence:</strong> High (CPR > 1, DOP < 0.13)</p>
+                            <p><strong>Porosity (f_vac):</strong> 0.45</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3D Visualization Embed -->
+                <div class="card glass-panel map-card">
+                    <h3>3D DFSAR Orbital Scan</h3>
+                    <div class="iframe-container">
+                        <!-- Plotly HTML will be embedded here -->
+                        <iframe src="3d_crater.html" frameborder="0" width="100%" height="100%"></iframe>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

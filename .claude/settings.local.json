@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip -q BAH2026_Project_Code_and_Figures.zip)",
+      "Bash(cp src/radar_processing.py src_new/radar_processing.py)",
+      "Bash(cp BAH2026_Project_Code/src/radar_processing.py ./src/radar_processing.py)",
+      "Bash(cp BAH2026_Project_Code/src/ice_volume.py ./src/ice_volume.py)",
+      "Bash(cp BAH2026_Project_Code/src/mission_planning.py ./src/mission_planning.py)",
+      "Bash(cp BAH2026_Project_Code/src/synth_dfsar.py ./src/synth_dfsar.py)",
+      "Bash(cp BAH2026_Project_Code/src/make_figures.py ./figures/make_figures.py)",
+      "Bash(cp BAH2026_Project_Code/src/make_crater_comparison.py ./figures/make_crater_comparison.py)",
+      "Bash(cp BAH2026_Project_Code/src/make_architecture_diagram.py ./figures/make_architecture_diagram.py)",
+      "Bash(cp BAH2026_Strategy_Guide.docx ./docs/BAH2026_Strategy_Guide.docx)",
+      "Bash(cp BAH2026_Strategy_Guide.pdf ./docs/BAH2026_Strategy_Guide.pdf)",
+      "Bash(cp BAH2026_Submission_Deck.pptx ./docs/BAH2026_Submission_Deck.pptx)"
+    ]
+  }
+}

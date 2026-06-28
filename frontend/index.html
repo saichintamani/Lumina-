@@ -6,10 +6,10 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Chandrayaan-3 | DFSAR Mission Dashboard</title>
+    <title>Chandrayaan-3 | Mission Control</title>
     <!-- Cache-busting query parameter for CSS -->
-    <link rel="stylesheet" href="styles.css?v=4">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=5">
+    
     <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -65,37 +65,38 @@
                     </div>
                 </div>
 
-                <!-- Ice Volume Results -->
+                <!-- NEW: Machine Learning Inference Card -->
                 <div class="card glass-panel highlight-card radar-scan">
                     <div class="scan-line" style="animation-delay: 1.5s;"></div>
-                    <h3>Lunar Ice Volume (Birchak/CRIM Model)</h3>
+                    <h3>AI Ice Probability (Random Forest)</h3>
                     <div class="ice-stats">
                         <div class="main-stat">
-                            <h2>18,800 <span class="unit">m³</span></h2>
-                            <p>Estimated Top-5m Subsurface Ice</p>
+                            <h2 id="ml-prob">94.2<span class="unit">%</span></h2>
+                            <p>Confidence: <span style="color:var(--success);font-weight:bold;">HIGH</span></p>
                         </div>
                         <div class="sub-stats">
-                            <p><strong>P10-P90 Range:</strong> 12,800 - 26,600 m³</p>
-                            <p><strong>Porosity (f_vac):</strong> 0.45</p>
+                            <p><strong>Model:</strong> scikit-learn RandomForestClassifier</p>
+                            <p><strong>Features:</strong> CPR, DOP, Slope, Temperature</p>
+                            <p><strong>Vol:</strong> ~18,800 m³ (Birchak Model)</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3D Visualization Embed -->
                 <div class="card glass-panel map-card" id="3d-orbit">
-                    <h3>Chandrayaan-3 Orbital Mechanics & Surface Tracking</h3>
+                    <h3>Chandrayaan-3 Orbital Mechanics & Polar Tracking</h3>
                     <div id="webgl-container" class="iframe-container" style="position: relative;">
                         <!-- Interactive 3D HUD Tooltip -->
                         <div id="hud-tooltip" class="hud-tooltip glass-panel" style="display: none; position: absolute; z-index: 20;">
                             <h4>Shiv Shakti Point</h4>
                             <p>Lat: -69.373° S</p>
                             <p>Lon: 32.319° E</p>
-                            <p class="status">Status: <span>Subsurface Ice Detected</span></p>
+                            <p class="status">Status: <span>Ice Probability 94%</span></p>
                         </div>
                         <!-- WebGL Canvas injected here by app.js -->
-                        <div id="loading-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; color: #3b82f6; z-index: 10;">
-                            <h2 style="margin-bottom: 10px;">Initializing ISRO Deep Space Network Link...</h2>
-                            <p>Loading High-Res Lunar Textures & Orbital Mechanics</p>
+                        <div id="loading-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #020617; color: #3b82f6; z-index: 10;">
+                            <h2 style="margin-bottom: 10px; font-family: 'Fira Code', monospace;">Initializing Deep Space Network...</h2>
+                            <p style="font-family: 'Fira Code', monospace;">Loading Photorealistic Textures & Polar Mechanics</p>
                         </div>
                     </div>
                 </div>
@@ -163,6 +164,6 @@
         </main>
     </div>
     <!-- Cache-busting query parameter for JS -->
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>

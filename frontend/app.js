@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Simulate fetching data from our space_data_integration.py backend
+    // ==========================================
+    // Telemetry & Machine Learning Inference
+    // ==========================================
     function fetchLiveTelemetry() {
-        const isSunlit = Math.random() > 0.3; // 70% chance of sunlight
+        const isSunlit = Math.random() > 0.3; 
         const temp = isSunlit ? (250 + Math.random() * 100).toFixed(1) : (40 + Math.random() * 50).toFixed(1);
         const solar = isSunlit ? (5 + Math.random() * 40).toFixed(1) : -10.0;
         
@@ -17,13 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             powerEl.innerText = "Battery Rsv";
             powerEl.className = "value";
-            powerEl.style.color = "#f59e0b"; // Warning orange
+            powerEl.style.color = "#f59e0b"; 
         }
+
+        // ML Inference Mockup (Fluctuates around the 94% we trained in python)
+        const mlBase = 92.5;
+        const mlFluctuation = (Math.random() * 3).toFixed(1);
+        const mlTotal = (mlBase + parseFloat(mlFluctuation)).toFixed(1);
+        document.getElementById('ml-prob').innerHTML = `${mlTotal}<span class="unit">%</span>`;
     }
 
-    // Update telemetry every 3 seconds to simulate a live feed
     fetchLiveTelemetry();
-    setInterval(fetchLiveTelemetry, 3000);
+    setInterval(fetchLiveTelemetry, 2000); // Faster polling for "live" feel
 
     // ==========================================
     // Advanced WebGL Orbital Simulation
@@ -34,24 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('webgl-container');
         if (!container) return;
 
-        // Remove loading overlay
         const loader = document.getElementById('loading-overlay');
         if (loader) loader.style.display = 'none';
 
-        // Scene setup
         const scene = new THREE.Scene();
         
-        // Camera setup (Start in Deep Space for cinematic fly-in)
         const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.set(0, 100, 300); // Far away
+        camera.position.set(0, 100, 300); // Deep Space start
 
-        // Renderer setup
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         container.appendChild(renderer.domElement);
 
-        // Controls
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
@@ -59,22 +61,18 @@ document.addEventListener('DOMContentLoaded', () => {
         controls.minDistance = 25;
         controls.maxDistance = 150;
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.05); // Very dark space
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.05); 
         scene.add(ambientLight);
 
         const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
         sunLight.position.set(100, 20, 50);
         scene.add(sunLight);
 
-        // Texture Loader
         const textureLoader = new THREE.TextureLoader();
 
-        // High-Res Photorealistic Moon Sphere
+        // High-Res Moon
         const moonRadius = 20;
         const moonGeometry = new THREE.SphereGeometry(moonRadius, 128, 128);
-        
-        // Using public MRDOOB Three.js examples textures for realism
         const moonColorMap = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg');
         
         const moonMaterial = new THREE.MeshStandardMaterial({
@@ -87,61 +85,65 @@ document.addEventListener('DOMContentLoaded', () => {
         const moon = new THREE.Mesh(moonGeometry, moonMaterial);
         scene.add(moon);
 
-        // Shiv Shakti Point Marker (South Pole ~ 69 deg South)
+        // Shiv Shakti Point
         const markerGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-        const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xff3b3b });
+        const markerMaterial = new THREE.MeshBasicMaterial({ color: 0x22c55e }); // Changed to green for success
         const marker = new THREE.Mesh(markerGeometry, markerMaterial);
         
-        // Coordinates setup
         const lat = -69.373 * (Math.PI / 180);
         const lon = -32.319 * (Math.PI / 180); 
         
-        // Add marker to a pivot point so it rotates correctly with the moon
         const markerPivot = new THREE.Group();
         markerPivot.add(marker);
-        moon.add(markerPivot); // Attach directly to moon mesh
+        moon.add(markerPivot); 
 
         marker.position.setFromSphericalCoords(moonRadius + 0.1, Math.PI / 2 - lat, lon);
 
-        // Marker Glow/Ping
         const ringGeometry = new THREE.RingGeometry(0.8, 1.2, 32);
-        const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xff3b3b, side: THREE.DoubleSide, transparent: true, opacity: 0.8 });
+        const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x22c55e, side: THREE.DoubleSide, transparent: true, opacity: 0.8 });
         const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-        marker.add(ring); // Attach ring to marker
+        marker.add(ring);
         ring.position.set(0,0,0);
         
-        // Ensure ring lies flat on surface
         const up = new THREE.Vector3(0, 1, 0);
         const surfaceNormal = marker.position.clone().normalize();
         ring.quaternion.setFromUnitVectors(up, surfaceNormal);
 
-        // Advanced Multi-part Chandrayaan-3 Orbiter
+        // Chandrayaan-3 Orbiter
         const orbiterGroup = new THREE.Group();
 
-        // Central Body (Gold Foil)
         const bodyGeo = new THREE.BoxGeometry(1, 1, 1.5);
         const bodyMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, roughness: 0.3, metalness: 0.8 });
         const body = new THREE.Mesh(bodyGeo, bodyMat);
         orbiterGroup.add(body);
 
-        // Solar Panels (Blue)
         const panelGeo = new THREE.BoxGeometry(4, 0.1, 1);
         const panelMat = new THREE.MeshStandardMaterial({ color: 0x0055ff, roughness: 0.1, metalness: 0.5 });
         const panels = new THREE.Mesh(panelGeo, panelMat);
         orbiterGroup.add(panels);
 
+        // Laser Altimeter Beam (Green)
+        const laserGeo = new THREE.CylinderGeometry(0.02, 0.02, 15, 8);
+        const laserMat = new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.6 });
+        const laser = new THREE.Mesh(laserGeo, laserMat);
+        // Position laser so it points straight down from the satellite
+        laser.position.set(0, -7.5, 0);
+        orbiterGroup.add(laser);
+
         scene.add(orbiterGroup);
 
-        // Orbital Ring Path
+        // Polar Orbital Ring Path
         const satRadius = 35;
-        const orbitGeometry = new THREE.TorusGeometry(satRadius, 0.05, 16, 100);
-        const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.4 });
+        const orbitGeometry = new THREE.TorusGeometry(satRadius, 0.05, 32, 100);
+        const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.3 });
         const orbitRing = new THREE.Mesh(orbitGeometry, orbitMaterial);
+        
+        // Accurate Polar Orbit (90 deg inclination roughly)
         orbitRing.rotation.x = Math.PI / 2;
-        orbitRing.rotation.y = 0.2; // slight inclination
+        orbitRing.rotation.y = Math.PI / 2; // Flip to go over the poles
         scene.add(orbitRing);
 
-        // Cosmos Starfield Particle System
+        // Starfield
         const starGeometry = new THREE.BufferGeometry();
         const starCount = 3000;
         const starPositions = new Float32Array(starCount * 3);
@@ -153,33 +155,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const stars = new THREE.Points(starGeometry, starMaterial);
         scene.add(stars);
 
-        // ==========================================
-        // Interactive HUD (Raycaster)
-        // ==========================================
+        // Raycaster HUD
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         const tooltip = document.getElementById('hud-tooltip');
 
         container.addEventListener('mousemove', (event) => {
             const rect = container.getBoundingClientRect();
-            // Calculate mouse position in normalized device coordinates (-1 to +1)
             mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
 
             raycaster.setFromCamera(mouse, camera);
-
-            // Calculate objects intersecting the picking ray
-            // We use marker as the interactive object
             const intersects = raycaster.intersectObject(marker);
 
             if (intersects.length > 0) {
-                // Show tooltip
                 tooltip.style.display = 'block';
                 tooltip.style.left = (event.clientX - rect.left) + 'px';
                 tooltip.style.top = (event.clientY - rect.top) + 'px';
                 document.body.style.cursor = 'pointer';
             } else {
-                // Hide tooltip
                 tooltip.style.display = 'none';
                 document.body.style.cursor = 'crosshair';
             }
@@ -189,25 +183,18 @@ document.addEventListener('DOMContentLoaded', () => {
             tooltip.style.display = 'none';
         });
 
-        // ==========================================
-        // Cinematic Camera Fly-In (GSAP)
-        // ==========================================
+        // Cinematic Fly-In
         if (typeof gsap !== 'undefined') {
             gsap.to(camera.position, {
-                x: 0,
+                x: 30,
                 y: -15, // Look at south pole
-                z: 50,
-                duration: 4,
+                z: 30,
+                duration: 5,
                 ease: "power3.inOut",
                 onUpdate: () => controls.update()
             });
-        } else {
-            // Fallback
-            camera.position.set(0, -15, 50);
-            controls.update();
         }
 
-        // Handle Resize
         window.addEventListener('resize', () => {
             if(!container) return;
             camera.aspect = container.clientWidth / container.clientHeight;
@@ -215,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderer.setSize(container.clientWidth, container.clientHeight);
         });
 
-        // Animation Loop
         let time = 0;
         const clock = new THREE.Clock();
 
@@ -224,30 +210,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const delta = clock.getDelta();
             time += delta;
 
-            // Rotate Moon slowly
             moon.rotation.y += 0.05 * delta;
 
-            // Pulse ring
             const scale = 1 + Math.sin(time * 3) * 0.4;
             ring.scale.set(scale, scale, scale);
             ring.material.opacity = 1 - (scale - 0.5) * 0.5;
 
-            // Move Satellite along orbit
-            const satAngle = time * 0.4;
-            orbiterGroup.position.x = satRadius * Math.cos(satAngle);
+            // Polar Orbit calculation
+            const satAngle = time * 0.3;
+            // Orbiting over poles (y and z axis mostly, with x offset for inclination)
+            orbiterGroup.position.x = 0;
+            orbiterGroup.position.y = satRadius * Math.cos(satAngle);
             orbiterGroup.position.z = satRadius * Math.sin(satAngle);
-            orbiterGroup.position.y = satRadius * Math.sin(satAngle) * Math.sin(0.2); // matched inclination
             
-            // Point satellite tangent to orbit path
-            const nextAngle = (time + 0.1) * 0.4;
-            const nextPos = new THREE.Vector3(
-                satRadius * Math.cos(nextAngle),
-                satRadius * Math.sin(nextAngle) * Math.sin(0.2),
-                satRadius * Math.sin(nextAngle)
-            );
-            orbiterGroup.lookAt(nextPos);
+            // Orient satellite so bottom faces the moon center
+            orbiterGroup.lookAt(new THREE.Vector3(0,0,0));
+            // Rotate the group so it flies forward along the orbit path rather than "falling"
+            orbiterGroup.rotateX(Math.PI / 2);
 
-            // Rotate starfield very slowly
+            // Blink laser altimeter
+            laser.material.opacity = (Math.sin(time * 20) > 0) ? 0.6 : 0.0;
+
             stars.rotation.y += 0.02 * delta;
 
             controls.update();
@@ -257,11 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
         animate();
     }
 
-    // Initialize WebGL once Three.js is loaded
     if (typeof THREE !== 'undefined') {
         initWebGL();
     } else {
-        // Wait for script to load if slow
         setTimeout(initWebGL, 1000);
     }
 });

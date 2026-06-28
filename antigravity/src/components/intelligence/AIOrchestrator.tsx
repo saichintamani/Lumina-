@@ -3,10 +3,12 @@
 import { useEffect, useRef } from 'react';
 import { useCinematicEngine } from '@/lib/memory/cinematicEngine';
 import { useMissionMemory } from '@/lib/memory/missionMemory';
+import { useVoiceSynthesis } from '@/lib/audio/useVoiceSynthesis';
 
 export default function AIOrchestrator() {
   const { currentPhase } = useCinematicEngine();
   const { recordDecision } = useMissionMemory();
+  const { speak } = useVoiceSynthesis();
   const lastPhase = useRef(currentPhase);
 
   useEffect(() => {
@@ -25,6 +27,7 @@ export default function AIOrchestrator() {
             assumptions: ['SAR antenna is deployed correctly.'],
             limitations: ['Sweep consumes 15% of available power budget.']
           });
+          speak("Mission Update: Initiated Synthetic Aperture Radar Sweep");
           break;
         case 'TERRAIN_GENERATION':
           recordDecision({
@@ -35,6 +38,7 @@ export default function AIOrchestrator() {
             assumptions: ['No significant terrain changes since last LRO pass.'],
             limitations: ['Mesh generation is computationally expensive, lowering UI frame rate temporarily.']
           });
+          speak("Mission Update: Generating High-Fidelity 3D Terrain Mesh");
           break;
         case 'TRAVERSE_PLANNING':
           recordDecision({
@@ -45,6 +49,7 @@ export default function AIOrchestrator() {
             assumptions: ['Rover traction model is accurate.'],
             limitations: ['Path does not account for sub-meter rocks or loose regolith.']
           });
+          speak("Mission Update: Calculated Optimal Traverse Route. Autonomous execution ready.");
           break;
         case 'MISSION_SUCCESS':
           recordDecision({
@@ -55,6 +60,7 @@ export default function AIOrchestrator() {
             assumptions: ['Communications link will remain stable.'],
             limitations: ['Earth-Moon latency prevents real-time manual override.']
           });
+          speak("Mission Success. Transitioned to Autonomous Surface Execution.");
           break;
       }
     }, 2000); // 2 second thinking delay

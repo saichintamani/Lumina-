@@ -13,6 +13,8 @@ import Link from 'next/link';
 import SubsystemHUD from '@/components/mission-control/SubsystemHUD';
 import MiniMapHUD from '@/components/mission-control/MiniMapHUD';
 import { useTelemetryAudio } from '@/lib/audio/useTelemetryAudio';
+import { useAudioSettingsStore } from '@/lib/audio/useAudioSettingsStore';
+import { Volume2, VolumeX } from 'lucide-react';
 
 // Custom Resize Handle
 const ResizeHandle = () => (
@@ -29,6 +31,7 @@ const HorizontalResizeHandle = () => (
 
 export default function MissionWorkspace() {
   const { decisionHistory } = useMissionMemory();
+  const { isVoiceEnabled, toggleVoice } = useAudioSettingsStore();
   const [mounted, setMounted] = useState(false);
   
   // Initialize procedural audio
@@ -51,7 +54,16 @@ export default function MissionWorkspace() {
           </Link>
           <span className="text-sm font-mono font-bold text-white tracking-widest">LUNAR DIGITAL TWIN // MISSION OPERATIONS</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={toggleVoice}
+            className={`flex items-center gap-2 px-3 py-1 rounded text-xs font-mono font-bold transition-colors ${
+              isVoiceEnabled ? 'bg-blue-600/20 text-blue-400 border border-blue-500/50' : 'bg-red-600/20 text-red-400 border border-red-500/50'
+            }`}
+          >
+            {isVoiceEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+            VOICE: {isVoiceEnabled ? 'ON' : 'OFF'}
+          </button>
           <span className="text-xs font-mono text-slate-500">Cmd+K for Command Palette</span>
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
         </div>

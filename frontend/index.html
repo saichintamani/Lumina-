@@ -16,10 +16,9 @@
                 <p>Shiv Shakti Mission</p>
             </div>
             <ul class="nav-links">
-                <li class="active">Dashboard</li>
-                <li>DFSAR Radar</li>
-                <li>Ice Volume</li>
-                <li>Pragyan Traversal</li>
+                <li class="active">Mission Dashboard</li>
+                <li><a href="#analysis-report" style="text-decoration: none; color: inherit;">Analysis Report</a></li>
+                <li><a href="#3d-orbit" style="text-decoration: none; color: inherit;">3D Orbital Scan</a></li>
             </ul>
         </nav>
 
@@ -58,21 +57,21 @@
 
                 <!-- Ice Volume Results -->
                 <div class="card glass-panel highlight-card">
-                    <h3>Lunar Ice Volume (Birchak Model)</h3>
+                    <h3>Lunar Ice Volume (Birchak/CRIM Model)</h3>
                     <div class="ice-stats">
                         <div class="main-stat">
-                            <h2>12,450 <span class="unit">m³</span></h2>
+                            <h2>18,800 <span class="unit">m³</span></h2>
                             <p>Estimated Top-5m Subsurface Ice</p>
                         </div>
                         <div class="sub-stats">
-                            <p><strong>Confidence:</strong> High (CPR > 1, DOP < 0.13)</p>
+                            <p><strong>P10-P90 Range:</strong> 12,800 - 26,600 m³</p>
                             <p><strong>Porosity (f_vac):</strong> 0.45</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3D Visualization Embed -->
-                <div class="card glass-panel map-card">
+                <div class="card glass-panel map-card" id="3d-orbit">
                     <h3>3D DFSAR Orbital Scan</h3>
                     <div class="iframe-container">
                         <!-- Plotly HTML will be embedded here -->
@@ -80,6 +79,66 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Scientific Analysis Report Section -->
+            <section class="analysis-section" id="analysis-report">
+                <div class="section-header">
+                    <h2>Scientific Analysis Report</h2>
+                    <p>Methodology and Pipeline Results for Subsurface Volatiles Detection</p>
+                </div>
+                
+                <div class="gallery-grid">
+                    <div class="gallery-card glass-panel">
+                        <img src="../figures/fig09_architecture.png" alt="Architecture Diagram">
+                        <div class="caption">System Architecture & Processing Pipeline</div>
+                    </div>
+                    
+                    <div class="gallery-card glass-panel wide-card">
+                        <img src="../figures/fig10_crater_comparison.png" alt="Crater Comparison Survey">
+                        <div class="caption">Comparative Survey (Why Faustini F2 was selected)</div>
+                    </div>
+
+                    <div class="gallery-card glass-panel">
+                        <img src="../figures/fig01_illumination_psr.png" alt="Illumination & PSR">
+                        <div class="caption">Illumination Model & Doubly-Shadowed Zone</div>
+                    </div>
+
+                    <div class="gallery-card glass-panel wide-card">
+                        <img src="../figures/fig02_cpr_dop_maps.png" alt="CPR and DOP Maps">
+                        <div class="caption">Polarimetric Radar Parameters (L-band)</div>
+                    </div>
+
+                    <div class="gallery-card glass-panel">
+                        <img src="../figures/fig04_cpr_dop_scatter.png" alt="CPR-DOP Parameter Space">
+                        <div class="caption">CPR-DOP Criterion Proof (Sinha et al. 2026)</div>
+                    </div>
+
+                    <div class="gallery-card glass-panel">
+                        <img src="../figures/fig03_terrain_classification.png" alt="Terrain Classification">
+                        <div class="caption">4-Class Terrain & Roughness Discrimination</div>
+                    </div>
+
+                    <div class="gallery-card glass-panel">
+                        <img src="../figures/fig08_detector_validation.png" alt="Detector Validation">
+                        <div class="caption">Detector Validation against Ground Truth</div>
+                    </div>
+
+                    <div class="gallery-card glass-panel wide-card">
+                        <img src="../figures/fig05_landing_traverse.png" alt="Landing Site Traverse">
+                        <div class="caption">Landing Site Selection & A* Rover Traverse Plan</div>
+                    </div>
+
+                    <div class="gallery-card glass-panel wide-card">
+                        <img src="../figures/fig06_slope_profile.png" alt="Traverse Slope Profile">
+                        <div class="caption">Traverse Engineering Profile (Slope & Illumination)</div>
+                    </div>
+
+                    <div class="gallery-card glass-panel">
+                        <img src="../figures/fig07_ice_volume.png" alt="Ice Volume Bounds">
+                        <div class="caption">Ice Volume Bootstrap Estimates</div>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
     <script src="app.js"></script>

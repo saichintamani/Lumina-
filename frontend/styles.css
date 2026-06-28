@@ -14,6 +14,7 @@
     margin: 0;
     padding: 0;
     font-family: 'Outfit', sans-serif;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -45,6 +46,9 @@ body {
     flex-direction: column;
     gap: 3rem;
     border-right: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    height: 100vh;
 }
 
 .logo h2 {
@@ -78,7 +82,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.nav-links li:hover {
+.nav-links li:hover, .nav-links li.active {
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-main);
 }
@@ -93,7 +97,7 @@ body {
     padding: 2rem 3rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 3rem;
 }
 
 .top-bar {
@@ -210,4 +214,75 @@ body {
     border-radius: 8px;
     overflow: hidden;
     background: #000;
+}
+
+/* Scientific Analysis Report Section */
+.analysis-section {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.section-header {
+    margin-bottom: 2rem;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 2rem;
+    grid-auto-flow: dense;
+}
+
+.gallery-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    overflow: hidden;
+    cursor: zoom-in;
+}
+
+.gallery-card.wide-card {
+    grid-column: span 2;
+}
+
+@media (max-width: 1400px) {
+    .gallery-card.wide-card {
+        grid-column: span 1;
+    }
+}
+
+.gallery-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 20px rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    z-index: 10;
+}
+
+.gallery-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.gallery-card .caption {
+    margin-top: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-align: center;
+    font-size: 1.05rem;
 }

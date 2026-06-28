@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import MoonScene from "@/components/visualization/MoonScene";
 import TelemetryDashboard from "@/components/visualization/TelemetryDashboard";
+import Link from "next/link";
+import { Navigation, Activity } from 'lucide-react';
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -115,16 +117,46 @@ export default function Home() {
             </div>
           </header>
 
-          <div className="grid grid-cols-3 gap-8 w-full pointer-events-auto">
-            <div className="glass-panel p-6 flex flex-col gap-4">
-              <h3 className="text-sm font-mono text-slate-400">AI INFERENCE (PHASE 2 PREVIEW)</h3>
-              <div className="text-5xl font-mono font-bold text-slate-600">OFFLINE</div>
-              <p className="text-xs text-slate-500 font-mono mt-auto">AWAITING NEURAL NET INITIALIZATION</p>
+          <div className="grid grid-cols-2 gap-8 w-full pointer-events-auto">
+            <div className="glass-panel p-6 flex flex-col gap-4 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-blue-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              <h3 className="text-sm font-mono text-slate-400 relative z-10 flex items-center gap-2">
+                <Navigation size={14} className="text-blue-400" />
+                MISSION CONTROL
+              </h3>
+              <div className="text-3xl font-mono font-bold text-white relative z-10">OPERATIONS</div>
+              <p className="text-xs text-slate-300 font-mono mt-auto relative z-10 mb-4">
+                Access the main dashboard to oversee lunar rover telemetry, AI planning, and orbital mechanics.
+              </p>
+              <Link 
+                href="/mission-control" 
+                className="relative z-10 mt-auto w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-mono text-sm text-center rounded transition-colors"
+              >
+                ENTER DASHBOARD
+              </Link>
             </div>
             
-            <div className="col-span-2 h-96 flex items-center justify-center relative overflow-hidden">
-              <TelemetryDashboard />
+            <div className="glass-panel p-6 flex flex-col gap-4 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-cyan-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              <h3 className="text-sm font-mono text-slate-400 relative z-10 flex items-center gap-2">
+                <Activity size={14} className="text-cyan-400" />
+                SCIENCE WORKSPACE
+              </h3>
+              <div className="text-3xl font-mono font-bold text-white relative z-10">SPECTROSCOPY</div>
+              <p className="text-xs text-slate-300 font-mono mt-auto relative z-10 mb-4">
+                Analyze sub-surface mineralogy using the high-fidelity volumetric X-Ray sensor simulation.
+              </p>
+              <Link 
+                href="/science" 
+                className="relative z-10 mt-auto w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-sm text-center rounded transition-colors"
+              >
+                OPEN WORKSPACE
+              </Link>
             </div>
+          </div>
+          
+          <div className="w-full h-64 mt-8 pointer-events-auto">
+            <TelemetryDashboard />
           </div>
         </motion.section>
       </div>

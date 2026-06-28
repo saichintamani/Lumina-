@@ -52,7 +52,7 @@ export default function MissionWorkspace() {
       <header className="h-12 border-b border-slate-800 bg-[#060b19] flex items-center justify-between px-4 shrink-0">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <Link href="/operations" className="text-slate-400 hover:text-white transition-colors">
+            <Link href="/" className="text-slate-400 hover:text-white transition-colors" title="Return to Landing Page">
               <Command size={18} />
             </Link>
             <span className="text-sm font-mono font-bold text-white tracking-widest">LUNAR DIGITAL TWIN // MISSION OPERATIONS</span>

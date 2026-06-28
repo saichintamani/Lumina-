@@ -27,7 +27,9 @@ export default function ScienceWorkspace() {
       <header className="h-12 border-b border-cyan-900/50 bg-[#000814] flex items-center justify-between px-4 shrink-0 shadow-[0_0_20px_rgba(0,255,255,0.05)]">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <Microscope size={18} className="text-cyan-400" />
+            <Link href="/" className="text-cyan-600 hover:text-cyan-400 transition-colors mr-2" title="Return to Landing Page">
+              <Microscope size={18} />
+            </Link>
             <span className="text-sm font-mono font-bold text-cyan-400 tracking-widest">LUNAR LAB // SCIENTIFIC ANALYSIS</span>
           </div>
           

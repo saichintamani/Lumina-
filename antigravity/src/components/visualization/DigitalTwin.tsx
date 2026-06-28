@@ -21,6 +21,7 @@ function CinematicCameraController() {
   const setCameraPosition = useTelemetryStore(state => state.setCameraPosition);
   const roverPosition = useTelemetryStore(state => state.roverPosition);
   const spaceWeather = useTelemetryStore(state => state.spaceWeather);
+  const cameraMode = useTelemetryStore(state => state.cameraMode);
 
   useFrame(() => {
     if (cameraRef.current) {
@@ -37,28 +38,51 @@ function CinematicCameraController() {
         camera.position.z += (Math.random() - 0.5) * jitterIntensity;
       }
 
-      // Third-Person Follow Camera logic for MANUAL_OVERRIDE
+      // Third-Person Follow Camera / First-Person Camera logic for MANUAL_OVERRIDE
       if (currentPhase === 'MANUAL_OVERRIDE') {
         const camera = cameraRef.current.object;
         const controls = cameraRef.current;
         
-        // Calculate a position slightly behind and above the rover
-        // Rover is roughly around [0, -1.48, 0.2]
-        const offset = new THREE.Vector3(0, 0.05, -0.15); // Offset relative to rover
+        if (cameraMode === 'FIRST_PERSON') {
+          // Snap camera to rover position (slightly elevated to simulate navcam height)
+          const targetCamPos = new THREE.Vector3(
+            roverPosition[0], 
+            roverPosition[1] + 0.05, 
+            roverPosition[2] + 0.05
+          );
+          
+          // Look slightly ahead and down
+          const forward = new THREE.Vector3(0, 0, 1).applyEuler(new THREE.Euler(0, 0, 0)); // Assuming rover moves mostly along Z
+          // Actually, our rover position is on the sphere. We need the tangent.
+          // Simplification: just look at the origin for a dramatic downwards view, 
+          // or look slightly along the surface.
+          const nPos = new THREE.Vector3(...roverPosition).normalize();
+          const targetLookAt = new THREE.Vector3(
+            roverPosition[0] - nPos.x * 0.1,
+            roverPosition[1] - nPos.y * 0.1,
+            roverPosition[2] - nPos.z * 0.1 + 0.5 // Push it along Z slightly
+          );
+
+          camera.position.lerp(targetCamPos, 0.2);
+          controls.target.lerp(targetLookAt, 0.2);
+
+        } else {
+          // Third Person Orbit
+          const offset = new THREE.Vector3(0, 0.05, -0.15); // Offset relative to rover
+          
+          const targetCamPos = new THREE.Vector3(
+            roverPosition[0], 
+            roverPosition[1] + 0.1, 
+            roverPosition[2] + 0.15
+          );
+
+          const targetLookAt = new THREE.Vector3(...roverPosition);
+
+          camera.position.lerp(targetCamPos, 0.05);
+          controls.target.lerp(targetLookAt, 0.05);
+        }
         
-        // Since rover is mostly on the bottom hemisphere, let's just use absolute positioning for now
-        // to keep it simple, pushing the camera "up" (y) and "back" (z) from the rover's position.
-        const targetCamPos = new THREE.Vector3(
-          roverPosition[0], 
-          roverPosition[1] + 0.1, 
-          roverPosition[2] + 0.15
-        );
-
-        const targetLookAt = new THREE.Vector3(...roverPosition);
-
-        // Smoothly interpolate (lerp) camera position and lookAt target
-        camera.position.lerp(targetCamPos, 0.05);
-        controls.target.lerp(targetLookAt, 0.05);
+        controls.update();
       }
     }
   });

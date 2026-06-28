@@ -6,14 +6,14 @@ import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
 import { useMissionMemory } from '@/lib/memory/missionMemory';
 import { useScenarioManager } from '@/lib/memory/scenarioManager';
 import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
-import { Terminal, Clock, Activity, Cpu, X, FastForward, Navigation } from 'lucide-react';
+import { Terminal, Clock, Activity, Cpu, X, FastForward, Navigation, Camera } from 'lucide-react';
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
-  const { jumpToPhase } = useCinematicEngine();
+  const { jumpToPhase, currentPhase } = useCinematicEngine();
   const { recordDecision, decisionHistory } = useMissionMemory();
   const { activeScenarioId, scenarios } = useScenarioManager();
-  const { triggerSolarFlare, resolveSolarFlare, spaceWeather, swarmActive, toggleSwarm } = useTelemetryStore();
+  const { triggerSolarFlare, resolveSolarFlare, spaceWeather, swarmActive, toggleSwarm, toggleCameraMode } = useTelemetryStore();
 
   // Toggle the menu when Cmd+K or Ctrl+K is pressed
   useEffect(() => {
@@ -71,6 +71,29 @@ export default function CommandPalette() {
               No results found.
             </Command.Empty>
 
+            <Command.Group heading="Telemetry & Operations" className="text-xs font-mono text-slate-500 mb-2 px-2 py-1">
+              <Command.Item 
+                onSelect={handleExport}
+                className="flex items-center px-2 py-3 rounded hover:bg-slate-800 text-slate-300 hover:text-white cursor-pointer font-mono text-sm"
+              >
+                <Cpu size={14} className="mr-3 text-emerald-400" /> Export Mission Logs (JSON)
+              </Command.Item>
+
+              <Command.Item 
+                onSelect={() => { toggleCameraMode(); setOpen(false); }}
+                className="flex items-center px-2 py-3 rounded hover:bg-slate-800 text-slate-300 hover:text-white cursor-pointer font-mono text-sm"
+              >
+                <Camera size={14} className="mr-3 text-amber-400" /> Toggle NavCam (First-Person View)
+              </Command.Item>
+
+              <Command.Item 
+                onSelect={() => { toggleSwarm(); setOpen(false); }}
+                className="flex items-center px-2 py-3 rounded hover:bg-slate-800 text-slate-300 hover:text-white cursor-pointer font-mono text-sm"
+              >
+                <FastForward size={14} className="mr-3 text-cyan-400" /> {swarmActive ? 'Recall' : 'Deploy'} Autonomous Scout Swarm
+              </Command.Item>
+            </Command.Group>
+
             <Command.Group heading="Mission Phases" className="text-xs font-mono text-slate-500 mb-2 px-2 py-1">
               <Command.Item 
                 onSelect={() => { jumpToPhase('ORBITAL_INSERTION'); setOpen(false); }}
@@ -95,15 +118,6 @@ export default function CommandPalette() {
                 className="flex items-center px-2 py-3 rounded hover:bg-pink-500/20 text-slate-300 hover:text-pink-400 cursor-pointer font-mono text-sm"
               >
                 <Activity size={14} className="mr-3" /> Engage Manual Override (WASD Driving)
-              </Command.Item>
-            </Command.Group>
-
-            <Command.Group heading="Data Management" className="text-xs font-mono text-slate-500 mb-2 px-2 py-1">
-              <Command.Item 
-                onSelect={handleExport}
-                className="flex items-center gap-3 px-3 py-2 text-sm text-slate-300 hover:bg-blue-600 hover:text-white rounded cursor-pointer transition-colors"
-              >
-                Export Mission Summary (JSON)
               </Command.Item>
             </Command.Group>
 

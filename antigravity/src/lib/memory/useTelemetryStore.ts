@@ -27,6 +27,10 @@ export interface TelemetryState {
   setTemperature: (val: number) => void;
   missionFailed: boolean;
   setMissionFailed: (val: boolean) => void;
+
+  // First-Person Camera
+  cameraMode: 'ORBIT' | 'FIRST_PERSON';
+  toggleCameraMode: () => void;
 }
 
 export const useTelemetryStore = create<TelemetryState>((set) => ({
@@ -50,4 +54,7 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
   setTemperature: (val) => set({ temperature: val }),
   missionFailed: false,
   setMissionFailed: (val) => set({ missionFailed: val }),
+
+  cameraMode: 'ORBIT',
+  toggleCameraMode: () => set((state) => ({ cameraMode: state.cameraMode === 'ORBIT' ? 'FIRST_PERSON' : 'ORBIT' })),
 }));

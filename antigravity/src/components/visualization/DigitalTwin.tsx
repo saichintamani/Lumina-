@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, Sphere, Html, Line, Stats } from '@react-three/drei';
+import { OrbitControls, Stars, Sphere, Html, Line, Stats, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
 import { useVisualLayers } from '@/lib/memory/visualLayerManager';
@@ -63,23 +63,33 @@ function CinematicCameraController() {
 function MoonModel() {
   const { currentPhase, timeOfDay } = useCinematicEngine();
   const { showTerrain, showElevation, showSlopeHeatmap, showIllumination, showMissionRoute } = useVisualLayers();
-  const moonRef = useRef<THREE.Mesh>(null);
+  const moonGroupRef = useRef<THREE.Group>(null);
+
+  // Load realistic lunar textures
+  const texture = useTexture('/moon_color.jpg');
 
   useFrame(() => {
-    if (moonRef.current && currentPhase === 'INITIALIZING') {
-      moonRef.current.rotation.y += 0.0005; // Slow idle rotation
+    if (moonGroupRef.current) {
+      // Continuous beautiful rotation for the whole lunar globe
+      // Stop rotation during close-up phases for precise planning
+      if (['INITIALIZING', 'ORBITAL_INSERTION'].includes(currentPhase)) {
+        moonGroupRef.current.rotation.y += 0.001; 
+      }
     }
   });
 
   return (
-    <group>
+    <group ref={moonGroupRef} rotation={[0.027, 0, 0]}> {/* 1.54 degree axial tilt */}
       {/* Base Moon */}
       {showTerrain && (
-        <Sphere ref={moonRef} args={[1.5, 64, 64]} position={[0, 0, 0]}>
+        <Sphere args={[1.5, 128, 128]} position={[0, 0, 0]}>
           <meshStandardMaterial 
-            color={showSlopeHeatmap ? "#3b0000" : "#888888"} // Fake heatmap visualization
-            roughness={0.9}
-            metalness={0.1}
+            map={texture}
+            bumpMap={texture}
+            bumpScale={0.02}
+            color={showSlopeHeatmap ? "#ff8888" : "#ffffff"} // Heatmap tint
+            roughness={1}
+            metalness={0.05}
             wireframe={showElevation || currentPhase === 'TERRAIN_GENERATION'}
           />
         </Sphere>

@@ -11,9 +11,11 @@ export default function AIOrchestrator() {
   const { recordDecision } = useMissionMemory();
   const { speak } = useVoiceSynthesis();
   const spaceWeather = useTelemetryStore(state => state.spaceWeather);
+  const missionFailed = useTelemetryStore(state => state.missionFailed);
   
   const lastPhase = useRef(currentPhase);
   const lastWeatherActive = useRef(spaceWeather.active);
+  const lastMissionFailed = useRef(missionFailed);
 
   useEffect(() => {
     if (currentPhase === lastPhase.current) return;
@@ -98,6 +100,21 @@ export default function AIOrchestrator() {
     }
     lastWeatherActive.current = spaceWeather.active;
   }, [spaceWeather.active, recordDecision, speak]);
+
+  useEffect(() => {
+    if (missionFailed && !lastMissionFailed.current) {
+      recordDecision({
+        what: 'CRITICAL FAILURE: BATTERY DEPLETED',
+        why: 'Rover navigated into permanent shadow. Thermal systems failed.',
+        evidence: ['Battery at 0%', 'Hull temperature below -170C.'],
+        confidence: 1.0,
+        assumptions: ['Mission cannot be recovered without solar recharge.'],
+        limitations: ['Hardware is permanently frozen.']
+      });
+      speak("Critical error. Thermal systems offline. Rover battery depleted. Mission Failed.");
+    }
+    lastMissionFailed.current = missionFailed;
+  }, [missionFailed, recordDecision, speak]);
 
   return null; // Headless component
 }

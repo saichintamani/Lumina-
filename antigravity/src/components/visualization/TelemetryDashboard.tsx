@@ -2,9 +2,12 @@
 
 import ReactECharts from "echarts-for-react";
 import { useEffect, useState } from "react";
+import { useTelemetryStore } from "@/lib/memory/useTelemetryStore";
+import { Battery, BatteryWarning, Thermometer, AlertTriangle, BatteryMedium, BatteryFull } from "lucide-react";
 
 export default function TelemetryDashboard() {
   const [mounted, setMounted] = useState(false);
+  const { batteryLevel, temperature, inShadow } = useTelemetryStore();
 
   useEffect(() => {
     setMounted(true);
@@ -136,12 +139,44 @@ export default function TelemetryDashboard() {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4 h-full w-full">
-      <div className="glass-panel p-4 h-full">
-        <ReactECharts option={radarOptions} style={{ height: "100%", width: "100%" }} />
+    <div className="flex flex-col h-full w-full gap-4">
+      {/* Survival Metrics Bar */}
+      <div className="flex flex-row justify-between items-center glass-panel p-4">
+        
+        {/* Thermal Sensor */}
+        <div className={`flex items-center space-x-3 ${inShadow ? 'text-blue-400' : 'text-orange-500'}`}>
+          <Thermometer size={24} className={inShadow ? 'animate-pulse' : ''} />
+          <div>
+            <div className="text-xs font-mono uppercase opacity-70">Hull Temperature</div>
+            <div className="text-xl font-bold font-mono">{temperature}°C</div>
+          </div>
+        </div>
+
+        {/* Hazard Warning */}
+        {inShadow && (
+          <div className="flex items-center space-x-2 text-red-500 animate-pulse bg-red-500/10 px-4 py-2 rounded">
+            <AlertTriangle size={20} />
+            <span className="font-mono font-bold text-sm">CRITICAL: SOLAR DEPRIVATION</span>
+          </div>
+        )}
+
+        {/* Battery Sensor */}
+        <div className={`flex items-center space-x-3 ${batteryLevel < 20 ? 'text-red-500 animate-pulse' : 'text-green-400'}`}>
+          <div>
+            <div className="text-xs font-mono uppercase opacity-70 text-right">Primary Battery</div>
+            <div className="text-xl font-bold font-mono text-right">{batteryLevel}%</div>
+          </div>
+          {batteryLevel > 75 ? <BatteryFull size={24} /> : batteryLevel > 20 ? <BatteryMedium size={24} /> : <BatteryWarning size={24} />}
+        </div>
       </div>
-      <div className="glass-panel p-4 h-full">
-        <ReactECharts option={chargingOptions} style={{ height: "100%", width: "100%" }} />
+
+      <div className="grid grid-cols-2 gap-4 h-full w-full">
+        <div className="glass-panel p-4 h-full">
+          <ReactECharts option={radarOptions} style={{ height: "100%", width: "100%" }} />
+        </div>
+        <div className="glass-panel p-4 h-full">
+          <ReactECharts option={chargingOptions} style={{ height: "100%", width: "100%" }} />
+        </div>
       </div>
     </div>
   );

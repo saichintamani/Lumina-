@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars, Sphere, Html, Line, Stats, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
@@ -221,7 +221,7 @@ function MoonModel() {
     <group ref={moonGroupRef} rotation={[0.027, 0, 0]}> {/* 1.54 degree axial tilt */}
       {/* Base Moon */}
       {showTerrain && (
-        <Sphere args={[1.5, 256, 256]} position={[0, 0, 0]} castShadow receiveShadow>
+        <Sphere name="Moon" args={[1.5, 256, 256]} position={[0, 0, 0]} castShadow receiveShadow>
           <meshStandardMaterial 
             map={texture}
             displacementMap={texture}
@@ -349,6 +349,68 @@ function MoonModel() {
 }
 
 // ----------------------------------------------------
+// Dynamic Sun & Raycast Shadows (Survival Physics)
+// ----------------------------------------------------
+function DynamicSun() {
+  const lightRef = useRef<THREE.DirectionalLight>(null);
+  const { roverPosition, setInShadow, setBatteryLevel, batteryLevel, setTemperature, setMissionFailed, missionFailed } = useTelemetryStore();
+  const raycaster = useMemo(() => new THREE.Raycaster(), []);
+  
+  // Throttle physics updates to save performance
+  const lastCheck = useRef(0);
+
+  useFrame(({ scene, clock }) => {
+    const time = clock.getElapsedTime();
+    
+    if (lightRef.current) {
+      // Orbit the sun slowly around the moon
+      // Using a highly elliptical/low angle orbit to simulate south pole long shadows
+      const orbitSpeed = 0.05;
+      const radius = 8;
+      lightRef.current.position.set(
+        Math.cos(time * orbitSpeed) * radius,
+        1.5, // Low angle
+        Math.sin(time * orbitSpeed) * radius
+      );
+
+      // Shadow physics check (Raycasting)
+      if (time - lastCheck.current > 0.5) {
+        lastCheck.current = time;
+
+        const moon = scene.getObjectByName('Moon');
+        if (moon) {
+          const roverVec = new THREE.Vector3(...roverPosition);
+          const lightVec = lightRef.current.position.clone();
+          const dirToSun = new THREE.Vector3().subVectors(lightVec, roverVec).normalize();
+          
+          raycaster.set(roverVec, dirToSun);
+          const intersects = raycaster.intersectObject(moon);
+
+          // If the ray hits the moon before the sun, the rover is in shadow!
+          const inShadow = intersects.length > 0 && intersects[0].distance < roverVec.distanceTo(lightVec);
+          
+          setInShadow(inShadow);
+          
+          if (inShadow) {
+            setTemperature(-173);
+            const newBattery = Math.max(0, batteryLevel - 2);
+            setBatteryLevel(newBattery); // Drain battery
+            if (newBattery === 0 && !missionFailed) {
+              setMissionFailed(true);
+            }
+          } else {
+            setTemperature(120);
+            setBatteryLevel(Math.min(100, batteryLevel + 1)); // Recharge battery
+          }
+        }
+      }
+    }
+  });
+
+  return <directionalLight ref={lightRef} intensity={1.5} color="#ffcc88" castShadow shadow-mapSize={[2048, 2048]} />;
+}
+
+// ----------------------------------------------------
 // Main Canvas Component
 // ----------------------------------------------------
 export default function DigitalTwin() {
@@ -361,8 +423,8 @@ export default function DigitalTwin() {
         <color attach="background" args={['#020617']} />
         <ambientLight intensity={0.15} />
         
-        {/* Cinematic Rim Light */}
-        <directionalLight position={[-4, 2, -6]} intensity={1.5} color="#ffcc88" />
+        {/* Dynamic Survival Sun */}
+        <DynamicSun />
         
         {/* Fill Light */}
         <pointLight position={[0, -3, 0]} intensity={0.5} color="#5577aa" />

@@ -17,6 +17,16 @@ export interface TelemetryState {
   // Swarm Intelligence
   swarmActive: boolean;
   toggleSwarm: () => void;
+
+  // Survival Mode (Thermal & Shadows)
+  inShadow: boolean;
+  setInShadow: (val: boolean) => void;
+  batteryLevel: number;
+  setBatteryLevel: (val: number) => void;
+  temperature: number;
+  setTemperature: (val: number) => void;
+  missionFailed: boolean;
+  setMissionFailed: (val: boolean) => void;
 }
 
 export const useTelemetryStore = create<TelemetryState>((set) => ({
@@ -31,4 +41,13 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
 
   swarmActive: false,
   toggleSwarm: () => set((state) => ({ swarmActive: !state.swarmActive })),
+
+  inShadow: false,
+  setInShadow: (val) => set({ inShadow: val }),
+  batteryLevel: 100,
+  setBatteryLevel: (val) => set({ batteryLevel: Math.max(0, Math.min(100, val)) }),
+  temperature: 120, // default sunlight temp
+  setTemperature: (val) => set({ temperature: val }),
+  missionFailed: false,
+  setMissionFailed: (val) => set({ missionFailed: val }),
 }));

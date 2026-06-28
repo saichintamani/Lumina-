@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { Panel, Group, Separator } from 'react-resizable-panels';
 import DigitalTwin from '@/components/visualization/DigitalTwin';
 import CommandCenter from '@/components/operations/CommandCenter';
 import ReplayControls from '@/components/mission-control/ReplayControls';
@@ -12,15 +12,15 @@ import Link from 'next/link';
 
 // Custom Resize Handle
 const ResizeHandle = () => (
-  <PanelResizeHandle className="w-1.5 bg-slate-900 hover:bg-blue-500/50 transition-colors cursor-col-resize flex flex-col justify-center items-center">
+  <Separator className="w-1.5 bg-slate-900 hover:bg-blue-500/50 transition-colors cursor-col-resize flex flex-col justify-center items-center">
     <div className="w-0.5 h-8 bg-slate-700 rounded-full" />
-  </PanelResizeHandle>
+  </Separator>
 );
 
 const HorizontalResizeHandle = () => (
-  <PanelResizeHandle className="h-1.5 bg-slate-900 hover:bg-blue-500/50 transition-colors cursor-row-resize flex flex-row justify-center items-center">
+  <Separator className="h-1.5 bg-slate-900 hover:bg-blue-500/50 transition-colors cursor-row-resize flex flex-row justify-center items-center">
     <div className="w-8 h-0.5 bg-slate-700 rounded-full" />
-  </PanelResizeHandle>
+  </Separator>
 );
 
 export default function MissionWorkspace() {
@@ -52,11 +52,11 @@ export default function MissionWorkspace() {
 
       {/* Workspace Area */}
       <div className="flex-1 overflow-hidden">
-        <PanelGroup direction="horizontal">
+        <Group orientation="horizontal">
           
           {/* Left Panel: 3D Twin & Timeline */}
           <Panel defaultSize={70} minSize={40}>
-            <PanelGroup direction="vertical">
+            <Group orientation="vertical">
               
               {/* Top: 3D Digital Twin */}
               <Panel defaultSize={80} minSize={50} className="relative bg-black">
@@ -73,14 +73,14 @@ export default function MissionWorkspace() {
                 <ReplayControls />
               </Panel>
 
-            </PanelGroup>
+            </Group>
           </Panel>
 
           <ResizeHandle />
 
           {/* Right Panel: AI & Analytics */}
           <Panel defaultSize={30} minSize={20} className="bg-[#060b19] flex flex-col overflow-hidden border-l border-slate-800">
-            <PanelGroup direction="vertical">
+            <Group orientation="vertical">
               
               {/* Top Right: Command Center (Logs/Tasks) */}
               <Panel defaultSize={40} className="overflow-y-auto p-4 border-b border-slate-800">
@@ -105,10 +105,10 @@ export default function MissionWorkspace() {
                 </div>
               </Panel>
 
-            </PanelGroup>
+            </Group>
           </Panel>
 
-        </PanelGroup>
+        </Group>
       </div>
 
     </div>

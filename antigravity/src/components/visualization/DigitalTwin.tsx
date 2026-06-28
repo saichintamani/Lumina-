@@ -234,6 +234,9 @@ function MoonModel() {
         </Sphere>
       )}
 
+      {/* Terrain Deformation / Tire Tracks */}
+      <TireTracksOverlay />
+
       {/* Subtle Atmospheric Glow (Rim) */}
       <Sphere args={[1.55, 64, 64]} position={[0, 0, 0]}>
         <meshBasicMaterial 
@@ -345,6 +348,88 @@ function MoonModel() {
         </group>
       )}
     </group>
+  );
+}
+
+// ----------------------------------------------------
+// Real-time Terrain Deformation (Tire Tracks)
+// ----------------------------------------------------
+function TireTracksOverlay() {
+  const { roverPosition } = useTelemetryStore();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const textureRef = useRef<THREE.CanvasTexture | null>(null);
+  const lastPos = useRef(new THREE.Vector3());
+
+  // Initialize Canvas
+  useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 2048; // High res for sharp tracks
+    canvas.height = 1024;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      // Clear with transparent background
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    canvasRef.current = canvas;
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.anisotropy = 16; // Better viewing at angles
+    textureRef.current = texture;
+  }, []);
+
+  useFrame(() => {
+    if (!canvasRef.current || !textureRef.current) return;
+    const ctx = canvasRef.current.getContext('2d');
+    if (!ctx) return;
+
+    const currentPos = new THREE.Vector3(...roverPosition);
+    
+    // Only draw if we moved
+    if (currentPos.distanceTo(lastPos.current) > 0.005) {
+      lastPos.current.copy(currentPos);
+      
+      // Calculate spherical UV coordinates for the rover's position
+      // Moon radius is 1.5
+      const radius = 1.5;
+      
+      // Normalize position
+      const nPos = currentPos.clone().normalize();
+      
+      // Standard spherical mapping
+      const u = 0.5 + Math.atan2(nPos.z, nPos.x) / (2 * Math.PI);
+      const v = 0.5 - Math.asin(nPos.y) / Math.PI;
+
+      // Convert UV to Canvas Pixels
+      const px = u * canvasRef.current.width;
+      const py = (1 - v) * canvasRef.current.height; // Flip V for canvas
+
+      // Draw Tire Track "Stamp"
+      ctx.beginPath();
+      ctx.arc(px, py, 2, 0, 2 * Math.PI); // 2px radius stamp
+      // Very dark, semi-transparent track color to blend with regolith
+      ctx.fillStyle = 'rgba(10, 15, 25, 0.4)'; 
+      ctx.fill();
+
+      // Important: Tell Three.js the canvas has updated
+      textureRef.current.needsUpdate = true;
+    }
+  });
+
+  return (
+    <Sphere args={[1.505, 128, 128]}>
+      {/* 
+        This sphere sits slightly above the main moon (1.505 vs 1.5).
+        It renders the transparent canvas texture, placing tire tracks onto the terrain.
+      */}
+      <meshStandardMaterial 
+        map={textureRef.current} 
+        transparent 
+        polygonOffset 
+        polygonOffsetFactor={-1} 
+        polygonOffsetUnits={-1}
+        roughness={0.9} // Tracks are rough
+      />
+    </Sphere>
   );
 }
 

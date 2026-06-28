@@ -82,18 +82,29 @@ function MoonModel() {
     <group ref={moonGroupRef} rotation={[0.027, 0, 0]}> {/* 1.54 degree axial tilt */}
       {/* Base Moon */}
       {showTerrain && (
-        <Sphere args={[1.5, 128, 128]} position={[0, 0, 0]}>
+        <Sphere args={[1.5, 256, 256]} position={[0, 0, 0]} castShadow receiveShadow>
           <meshStandardMaterial 
             map={texture}
-            bumpMap={texture}
-            bumpScale={0.02}
+            displacementMap={texture}
+            displacementScale={0.06} // Aggressive 3D displacement
             color={showSlopeHeatmap ? "#ff8888" : "#ffffff"} // Heatmap tint
-            roughness={1}
+            roughness={0.85}
             metalness={0.05}
             wireframe={showElevation || currentPhase === 'TERRAIN_GENERATION'}
           />
         </Sphere>
       )}
+
+      {/* Subtle Atmospheric Glow (Rim) */}
+      <Sphere args={[1.55, 64, 64]} position={[0, 0, 0]}>
+        <meshBasicMaterial 
+          color="#ffeedd"
+          transparent
+          opacity={0.03}
+          side={THREE.BackSide}
+          blending={THREE.AdditiveBlending}
+        />
+      </Sphere>
 
       {/* Dynamic Illumination */}
       {showIllumination && (
@@ -175,9 +186,19 @@ export default function DigitalTwin() {
       <Canvas shadows camera={{ position: [0, 0, 10], fov: 45 }}>
         {showPerformanceStats && <Stats className="!absolute !top-12 !left-4" />}
         <color attach="background" args={['#020617']} />
-        <ambientLight intensity={0.05} />
+        <ambientLight intensity={0.15} />
         
-        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+        {/* Cinematic Rim Light */}
+        <directionalLight position={[-4, 2, -6]} intensity={1.5} color="#ffcc88" />
+        
+        {/* Fill Light */}
+        <pointLight position={[0, -3, 0]} intensity={0.5} color="#5577aa" />
+        
+        {/* Multi-layered Parallax Starfield */}
+        <group>
+          <Stars radius={100} depth={50} count={3000} factor={3} saturation={0} fade speed={0.5} />
+          <Stars radius={150} depth={80} count={2000} factor={4} saturation={0.5} fade speed={1} />
+        </group>
         
         <React.Suspense fallback={
           <Html center>

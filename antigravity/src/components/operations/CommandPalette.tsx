@@ -4,12 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { Command } from 'cmdk';
 import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
 import { useMissionMemory } from '@/lib/memory/missionMemory';
+import { useScenarioManager } from '@/lib/memory/scenarioManager';
 import { Terminal, Clock, Activity, Cpu, X, FastForward, Navigation } from 'lucide-react';
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const { jumpToPhase } = useCinematicEngine();
-  const { recordDecision } = useMissionMemory();
+  const { recordDecision, decisionHistory } = useMissionMemory();
+  const { activeScenarioId, scenarios } = useScenarioManager();
 
   // Toggle the menu when Cmd+K or Ctrl+K is pressed
   useEffect(() => {
@@ -23,6 +25,23 @@ export default function CommandPalette() {
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
   }, []);
+
+  const handleExport = () => {
+    const activeScenario = scenarios.find(s => s.id === activeScenarioId);
+    const exportData = {
+      timestamp: new Date().toISOString(),
+      activeScenario,
+      decisionHistory
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mission_export_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setOpen(false);
+  };
 
   if (!open) return null;
 
@@ -68,6 +87,15 @@ export default function CommandPalette() {
                 className="flex items-center px-2 py-3 rounded hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 cursor-pointer font-mono text-sm"
               >
                 <FastForward size={14} className="mr-3" /> Jump to Traverse Planning
+              </Command.Item>
+            </Command.Group>
+
+            <Command.Group heading="Data Management" className="text-xs font-mono text-slate-500 mb-2 px-2 py-1">
+              <Command.Item 
+                onSelect={handleExport}
+                className="flex items-center gap-3 px-3 py-2 text-sm text-slate-300 hover:bg-blue-600 hover:text-white rounded cursor-pointer transition-colors"
+              >
+                Export Mission Summary (JSON)
               </Command.Item>
             </Command.Group>
 

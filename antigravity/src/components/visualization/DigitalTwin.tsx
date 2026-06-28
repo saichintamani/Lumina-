@@ -2,9 +2,10 @@
 
 import React, { useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, Sphere, Html, Line } from '@react-three/drei';
+import { OrbitControls, Stars, Sphere, Html, Line, Stats } from '@react-three/drei';
 import * as THREE from 'three';
 import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
+import { useVisualLayers } from '@/lib/memory/visualLayerManager';
 import gsap from 'gsap';
 
 // ----------------------------------------------------
@@ -61,6 +62,7 @@ function CinematicCameraController() {
 // ----------------------------------------------------
 function MoonModel() {
   const { currentPhase, timeOfDay } = useCinematicEngine();
+  const { showTerrain, showElevation, showSlopeHeatmap, showIllumination, showMissionRoute } = useVisualLayers();
   const moonRef = useRef<THREE.Mesh>(null);
 
   useFrame(() => {
@@ -72,21 +74,25 @@ function MoonModel() {
   return (
     <group>
       {/* Base Moon */}
-      <Sphere ref={moonRef} args={[1.5, 64, 64]} position={[0, 0, 0]}>
-        <meshStandardMaterial 
-          color="#888888"
-          roughness={0.9}
-          metalness={0.1}
-          wireframe={currentPhase === 'TERRAIN_GENERATION'}
-        />
-      </Sphere>
+      {showTerrain && (
+        <Sphere ref={moonRef} args={[1.5, 64, 64]} position={[0, 0, 0]}>
+          <meshStandardMaterial 
+            color={showSlopeHeatmap ? "#3b0000" : "#888888"} // Fake heatmap visualization
+            roughness={0.9}
+            metalness={0.1}
+            wireframe={showElevation || currentPhase === 'TERRAIN_GENERATION'}
+          />
+        </Sphere>
+      )}
 
       {/* Dynamic Illumination */}
-      <directionalLight 
-        position={[Math.cos(timeOfDay) * 10, Math.sin(timeOfDay) * 10, 5]} 
-        intensity={2} 
-        castShadow 
-      />
+      {showIllumination && (
+        <directionalLight 
+          position={[Math.cos(timeOfDay) * 10, Math.sin(timeOfDay) * 10, 5]} 
+          intensity={2} 
+          castShadow 
+        />
+      )}
 
       {/* Faustini Crater Marker (South Pole ~85S, 30E) */}
       {currentPhase !== 'INITIALIZING' && (
@@ -100,8 +106,8 @@ function MoonModel() {
         </group>
       )}
 
-      {/* Traverse Path Visualization (Appears during planning) */}
-      {currentPhase === 'TRAVERSE_PLANNING' && (
+      {/* Traverse Path Visualization (Appears during planning or if toggle is true) */}
+      {(currentPhase === 'TRAVERSE_PLANNING' || showMissionRoute) && (
         <Line
           points={[
             [0, -1.48, 0.2],
@@ -109,7 +115,7 @@ function MoonModel() {
             [0.08, -1.46, 0.25],
             [0.1, -1.45, 0.3]
           ]}
-          color="#3b82f6"
+          color={showSlopeHeatmap ? "#ef4444" : "#3b82f6"} // Red route if hazards are on
           lineWidth={3}
           dashed={true}
         />
@@ -122,9 +128,12 @@ function MoonModel() {
 // Main Canvas Component
 // ----------------------------------------------------
 export default function DigitalTwin() {
+  const { showPerformanceStats } = useVisualLayers();
+
   return (
     <div className="w-full h-full bg-[#020617] relative">
       <Canvas shadows camera={{ position: [0, 0, 10], fov: 45 }}>
+        {showPerformanceStats && <Stats className="!absolute !top-12 !left-4" />}
         <color attach="background" args={['#020617']} />
         <ambientLight intensity={0.05} />
         

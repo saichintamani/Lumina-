@@ -16,15 +16,11 @@ export default function ExplanationCard({ decision }: { decision: DecisionRecord
           <p className="text-sm text-slate-300">{decision.why}</p>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-xs font-mono text-slate-400 mb-1">CONFIDENCE</span>
-          <div className="flex items-center gap-2">
-            <div className="w-16 h-2 bg-slate-800 rounded overflow-hidden">
-              <div 
-                className={`h-full ${decision.confidence > 0.8 ? 'bg-green-500' : 'bg-yellow-500'}`} 
-                style={{ width: `${decision.confidence * 100}%` }}
-              />
-            </div>
-            <span className="text-sm font-mono text-white">{(decision.confidence * 100).toFixed(1)}%</span>
+          <div className="flex gap-2 text-xs font-mono">
+            <span className="text-slate-500">CONFIDENCE:</span>
+            <span className={decision.confidence > 0.9 ? 'text-green-400' : 'text-amber-400'}>
+              {(decision.confidence * 100).toFixed(1)}%
+            </span>
           </div>
         </div>
       </div>

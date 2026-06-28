@@ -1,5 +1,5 @@
 import React from 'react';
-import MissionWorkspace from '@/components/mission-control/MissionWorkspace';
+import WorkspaceContainer from '@/components/workspaces/WorkspaceContainer';
 
 export const metadata = {
   title: 'Mission Control | Lunar Digital Twin',
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function MissionControlRoute() {
-  return <MissionWorkspace />;
+  return <WorkspaceContainer />;
 }

@@ -229,6 +229,7 @@ body {
     height: 600px;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .iframe-container {
@@ -243,6 +244,45 @@ body {
     width: 100% !important;
     height: 100% !important;
     display: block;
+    cursor: crosshair;
+}
+
+/* Interactive HUD Tooltip */
+.hud-tooltip {
+    padding: 1rem;
+    border-left: 3px solid #ff3b3b;
+    transform: translate(-50%, -120%);
+    pointer-events: none;
+    transition: opacity 0.2s;
+    min-width: 200px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    background: rgba(11, 15, 25, 0.85);
+}
+
+.hud-tooltip h4 {
+    margin-bottom: 0.5rem;
+    color: #ff3b3b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hud-tooltip p {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+}
+
+.hud-tooltip .status {
+    margin-top: 0.8rem;
+    font-family: 'Outfit', sans-serif;
+    color: #e2e8f0;
+}
+
+.hud-tooltip .status span {
+    color: var(--success);
+    font-weight: 600;
 }
 
 /* Scientific Analysis Report Section */

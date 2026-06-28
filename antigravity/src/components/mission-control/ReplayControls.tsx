@@ -37,23 +37,45 @@ export default function ReplayControls() {
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div className="relative w-full h-2 bg-slate-800 rounded overflow-hidden cursor-pointer">
-        <div 
-          className="absolute top-0 left-0 h-full bg-blue-500 transition-all duration-500 ease-out" 
-          style={{ width: `${progress}%` }} 
-        />
-        <div className="absolute top-0 right-0 h-full w-full flex justify-between px-1">
-          {PHASES.map((p, i) => (
-            <div key={p} className="w-px h-full bg-slate-900/50" />
-          ))}
-        </div>
+      {/* Advanced Segments Progress Bar */}
+      <div className="relative w-full h-4 rounded-full flex gap-1 p-1 bg-slate-900/50 border border-slate-800">
+        {PHASES.map((phase, i) => {
+          const isActive = i === currentIndex;
+          const isPast = i < currentIndex;
+          
+          return (
+            <div 
+              key={phase}
+              onClick={() => jumpToPhase(phase)}
+              className="group relative flex-1 h-full rounded-full cursor-pointer transition-all duration-300"
+            >
+              {/* Background fill */}
+              <div 
+                className={`absolute inset-0 rounded-full transition-all duration-500 ease-out ${isActive ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]' : isPast ? 'bg-blue-900/40' : 'bg-slate-800/50 group-hover:bg-slate-700'}`}
+              />
+              
+              {/* Animated pulse indicator for active phase */}
+              {isActive && (
+                <div className="absolute inset-0 bg-blue-400 rounded-full animate-ping opacity-20" />
+              )}
+              
+              {/* Hover Tooltip */}
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                <div className="bg-black/90 border border-slate-700 text-[10px] font-mono text-white px-2 py-1 rounded shadow-lg">
+                  {phase.replace('_', ' ')}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="flex justify-between text-[10px] font-mono text-slate-500 px-1">
-        <span>T-MINUS</span>
-        <span className="text-blue-400 font-bold">{currentPhase.replace('_', ' ')}</span>
-        <span>T-PLUS</span>
+      <div className="flex justify-between text-[10px] font-mono px-2">
+        <span className="text-slate-500">T-MINUS</span>
+        <span className="text-blue-400 font-bold tracking-widest bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all">
+          {currentPhase.replace('_', ' ')}
+        </span>
+        <span className="text-slate-500">T-PLUS</span>
       </div>
 
       {/* Controls */}
@@ -75,15 +97,20 @@ export default function ReplayControls() {
       </div>
 
       {/* Phase Jump Grid */}
-      <div className="grid grid-cols-4 gap-2 mt-4">
+      <div className="grid grid-cols-4 gap-2 mt-2">
         {PHASES.map((phase) => (
           <button
             key={phase}
             onClick={() => jumpToPhase(phase)}
-            className={`text-[9px] font-mono p-1 rounded border transition-all truncate
-              ${currentPhase === phase ? 'bg-blue-500/20 border-blue-500 text-blue-400' : 'border-slate-800 text-slate-500 hover:border-slate-600'}
+            className={`relative overflow-hidden text-[9px] font-mono p-1.5 rounded border transition-all truncate
+              ${currentPhase === phase 
+                ? 'bg-blue-500/20 border-blue-500 text-blue-400 shadow-[inset_0_0_15px_rgba(59,130,246,0.2)]' 
+                : 'bg-black/40 border-slate-800 text-slate-500 hover:border-slate-600 hover:text-slate-300'}
             `}
           >
+            {currentPhase === phase && (
+              <div className="absolute left-0 top-0 w-0.5 h-full bg-blue-400 shadow-[0_0_8px_rgba(59,130,246,1)]" />
+            )}
             {phase.replace('_', ' ')}
           </button>
         ))}

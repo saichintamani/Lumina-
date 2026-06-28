@@ -13,7 +13,7 @@
 ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
 ```
 
-### **LUNAR DIGITAL TWIN · MISSION INTELLIGENCE PLATFORM**
+### **LUNAR DIGITAL TWIN · ISRO · MISSION INTELLIGENCE PLATFORM**
 
 *Next-generation autonomous swarm navigation, explainable AI reasoning, and real-time spectroscopy — designed for the Moon.*
 

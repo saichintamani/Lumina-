@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { Panel, Group, Separator } from 'react-resizable-panels';
+import CommandPalette from '@/components/operations/CommandPalette';
+import TelemetryDashboard from '@/components/operations/TelemetryDashboard';
 import DigitalTwin from '@/components/visualization/DigitalTwin';
-import CommandCenter from '@/components/operations/CommandCenter';
 import ReplayControls from '@/components/mission-control/ReplayControls';
 import ExplanationCard from '@/components/intelligence/ExplanationCard';
 import { useMissionMemory } from '@/lib/memory/missionMemory';
@@ -45,10 +46,12 @@ export default function MissionWorkspace() {
           <span className="text-sm font-mono font-bold text-white tracking-widest">LUNAR DIGITAL TWIN // MISSION OPERATIONS</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-mono text-slate-500">CmdK - Command Palette</span>
+          <span className="text-xs font-mono text-slate-500">Cmd+K for Command Palette</span>
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
         </div>
       </header>
+
+      <CommandPalette />
 
       {/* Workspace Area */}
       <div className="flex-1 overflow-hidden">
@@ -82,10 +85,10 @@ export default function MissionWorkspace() {
           <Panel defaultSize={30} minSize={20} className="bg-[#060b19] flex flex-col overflow-hidden border-l border-slate-800">
             <Group orientation="vertical">
               
-              {/* Top Right: Command Center (Logs/Tasks) */}
+              {/* Top Right: Telemetry Dashboard */}
               <Panel defaultSize={40} className="overflow-y-auto p-4 border-b border-slate-800">
-                <h3 className="text-xs font-mono text-slate-500 mb-3">SYSTEM LOGS</h3>
-                <CommandCenter />
+                <h3 className="text-xs font-mono text-slate-500 mb-3">LIVE TELEMETRY</h3>
+                <TelemetryDashboard />
               </Panel>
 
               <HorizontalResizeHandle />

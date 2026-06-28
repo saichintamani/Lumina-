@@ -1,0 +1,98 @@
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import { Command } from 'cmdk';
+import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
+import { useMissionMemory } from '@/lib/memory/missionMemory';
+import { Terminal, Clock, Activity, Cpu, X, FastForward, Navigation } from 'lucide-react';
+
+export default function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const { jumpToPhase } = useCinematicEngine();
+  const { recordDecision } = useMissionMemory();
+
+  // Toggle the menu when Cmd+K or Ctrl+K is pressed
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen((open) => !open);
+      }
+    };
+
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, []);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-[#060b19] border border-slate-700 rounded-lg shadow-2xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <Command label="Command Menu" className="flex flex-col w-full h-full">
+          
+          {/* Header Input */}
+          <div className="flex items-center border-b border-slate-700 px-3">
+            <Terminal size={18} className="text-slate-400 mr-2" />
+            <Command.Input 
+              autoFocus 
+              placeholder="Type a command or search logs..." 
+              className="flex-1 bg-transparent border-none text-white p-4 focus:outline-none placeholder-slate-500 font-mono text-sm"
+            />
+            <button onClick={() => setOpen(false)} className="text-slate-500 hover:text-white p-1">
+              <X size={18} />
+            </button>
+          </div>
+
+          {/* Search List */}
+          <Command.List className="max-h-[300px] overflow-y-auto p-2 scrollbar-thin">
+            <Command.Empty className="py-6 text-center text-sm text-slate-500 font-mono">
+              No results found.
+            </Command.Empty>
+
+            <Command.Group heading="Mission Phases" className="text-xs font-mono text-slate-500 mb-2 px-2 py-1">
+              <Command.Item 
+                onSelect={() => { jumpToPhase('ORBITAL_INSERTION'); setOpen(false); }}
+                className="flex items-center px-2 py-3 rounded hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 cursor-pointer font-mono text-sm"
+              >
+                <Navigation size={14} className="mr-3" /> Jump to Orbital Insertion
+              </Command.Item>
+              <Command.Item 
+                onSelect={() => { jumpToPhase('TERRAIN_GENERATION'); setOpen(false); }}
+                className="flex items-center px-2 py-3 rounded hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 cursor-pointer font-mono text-sm"
+              >
+                <Activity size={14} className="mr-3" /> Jump to Terrain Generation
+              </Command.Item>
+              <Command.Item 
+                onSelect={() => { jumpToPhase('TRAVERSE_PLANNING'); setOpen(false); }}
+                className="flex items-center px-2 py-3 rounded hover:bg-blue-500/20 text-slate-300 hover:text-blue-400 cursor-pointer font-mono text-sm"
+              >
+                <FastForward size={14} className="mr-3" /> Jump to Traverse Planning
+              </Command.Item>
+            </Command.Group>
+
+            <Command.Group heading="AI Interventions" className="text-xs font-mono text-slate-500 mb-2 px-2 py-1">
+              <Command.Item 
+                onSelect={() => {
+                  recordDecision({
+                    what: 'Manual AI Diagnostic Sweep Triggered',
+                    why: 'Operator invoked a priority override to manually inspect thermal and power subsystems.',
+                    evidence: ['Command Palette override code received.', 'No prior anomalies detected in orbital phase.'],
+                    confidence: 0.99,
+                    assumptions: ['Sensors are fully calibrated.', 'Telemetry stream is unimpeded.'],
+                    limitations: ['Sweep requires 15 seconds to complete.']
+                  });
+                  setOpen(false);
+                }}
+                className="flex items-center px-2 py-3 rounded hover:bg-red-500/20 text-slate-300 hover:text-red-400 cursor-pointer font-mono text-sm"
+              >
+                <Cpu size={14} className="mr-3" /> Trigger AI Diagnostic Sweep
+              </Command.Item>
+            </Command.Group>
+            
+          </Command.List>
+        </Command>
+      </div>
+    </div>
+  );
+}

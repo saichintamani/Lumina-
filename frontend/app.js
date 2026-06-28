@@ -2,39 +2,41 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ==========================================
     // Telemetry & Machine Learning Inference
+    // Faustini Doubly Shadowed Region (DSR)
     // ==========================================
     function fetchLiveTelemetry() {
-        const isSunlit = Math.random() > 0.3; 
-        const temp = isSunlit ? (250 + Math.random() * 100).toFixed(1) : (40 + Math.random() * 50).toFixed(1);
-        const solar = isSunlit ? (5 + Math.random() * 40).toFixed(1) : -10.0;
+        // Deep cold in DSR, rarely sees sunlight
+        const isSunlit = Math.random() > 0.95; 
+        const temp = isSunlit ? (120 + Math.random() * 20).toFixed(1) : (30 + Math.random() * 20).toFixed(1);
+        const solar = isSunlit ? (1 + Math.random() * 5).toFixed(1) : -15.0;
         
         document.getElementById('temp-val').innerText = `${temp} K`;
         document.getElementById('solar-val').innerText = `${solar}°`;
         
-        const powerEl = document.getElementById('power-val');
-        if(isSunlit) {
-            powerEl.innerText = "Optimal";
-            powerEl.className = "value success";
-            powerEl.style.color = "";
+        const hazardEl = document.getElementById('power-val'); // Using power-val ID for hazard in HTML
+        if(temp > 40) {
+            hazardEl.innerText = "Optimal (Corridor D)";
+            hazardEl.className = "value success";
+            hazardEl.style.color = "";
         } else {
-            powerEl.innerText = "Battery Rsv";
-            powerEl.className = "value";
-            powerEl.style.color = "#f59e0b"; 
+            hazardEl.innerText = "Extreme Cold";
+            hazardEl.className = "value";
+            hazardEl.style.color = "#3b82f6"; // Ice blue warning
         }
 
-        // ML Inference Mockup (Fluctuates around the 94% we trained in python)
-        const mlBase = 92.5;
-        const mlFluctuation = (Math.random() * 3).toFixed(1);
+        // ML Inference for Subsurface Ice
+        const mlBase = 96.5;
+        const mlFluctuation = (Math.random() * 2).toFixed(1);
         const mlTotal = (mlBase + parseFloat(mlFluctuation)).toFixed(1);
         document.getElementById('ml-prob').innerHTML = `${mlTotal}<span class="unit">%</span>`;
     }
 
     fetchLiveTelemetry();
-    setInterval(fetchLiveTelemetry, 2000); // Faster polling for "live" feel
+    setInterval(fetchLiveTelemetry, 2000); 
 
     // ==========================================
-    // Advanced WebGL Orbital Simulation
-    // Inspired by smitbhalodiya/chandrayaan-3
+    // Advanced WebGL Traverse Simulation
+    // Focused on Rover Path to Doubly Shadowed Crater
     // ==========================================
     
     function initWebGL() {
@@ -46,8 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const scene = new THREE.Scene();
         
+        // Start camera closer for a better view of the surface traverse
         const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.set(0, 100, 300); // Deep Space start
+        camera.position.set(0, 15, 40); 
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
@@ -57,15 +60,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.enablePan = false;
-        controls.minDistance = 25;
-        controls.maxDistance = 150;
+        controls.enablePan = true;
+        controls.minDistance = 22;
+        controls.maxDistance = 80;
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.05); 
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.02); // Deep shadow
         scene.add(ambientLight);
 
-        const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
-        sunLight.position.set(100, 20, 50);
+        // Grazing angle light mimicking polar illumination
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        sunLight.position.set(100, 5, 50);
         scene.add(sunLight);
 
         const textureLoader = new THREE.TextureLoader();
@@ -78,70 +82,73 @@ document.addEventListener('DOMContentLoaded', () => {
         const moonMaterial = new THREE.MeshStandardMaterial({
             map: moonColorMap,
             bumpMap: moonColorMap,
-            bumpScale: 0.2,
-            roughness: 0.9,
-            metalness: 0.1
+            bumpScale: 0.8, // Enhanced bump for rough terrain
+            roughness: 0.95,
+            metalness: 0.05
         });
         const moon = new THREE.Mesh(moonGeometry, moonMaterial);
         scene.add(moon);
 
-        // Shiv Shakti Point
-        const markerGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-        const markerMaterial = new THREE.MeshBasicMaterial({ color: 0x22c55e }); // Changed to green for success
-        const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+        // Target: Doubly Shadowed Crater (Lobate Rim)
+        const targetGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+        const targetMaterial = new THREE.MeshBasicMaterial({ color: 0x22c55e }); // Green target
+        const target = new THREE.Mesh(targetGeometry, targetMaterial);
         
-        const lat = -69.373 * (Math.PI / 180);
-        const lon = -32.319 * (Math.PI / 180); 
+        // Faustini crater approximate area (South Pole)
+        const lat = -85.46 * (Math.PI / 180);
+        const lon = 30.12 * (Math.PI / 180); 
         
-        const markerPivot = new THREE.Group();
-        markerPivot.add(marker);
-        moon.add(markerPivot); 
+        const surfaceGroup = new THREE.Group();
+        moon.add(surfaceGroup); 
 
-        marker.position.setFromSphericalCoords(moonRadius + 0.1, Math.PI / 2 - lat, lon);
+        target.position.setFromSphericalCoords(moonRadius + 0.05, Math.PI / 2 - lat, lon);
 
-        const ringGeometry = new THREE.RingGeometry(0.8, 1.2, 32);
-        const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x22c55e, side: THREE.DoubleSide, transparent: true, opacity: 0.8 });
-        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-        marker.add(ring);
-        ring.position.set(0,0,0);
+        const targetRingGeo = new THREE.RingGeometry(0.5, 0.8, 32);
+        const targetRingMat = new THREE.MeshBasicMaterial({ color: 0x22c55e, side: THREE.DoubleSide, transparent: true, opacity: 0.8 });
+        const targetRing = new THREE.Mesh(targetRingGeo, targetRingMat);
+        target.add(targetRing);
+        targetRing.position.set(0,0,0);
         
         const up = new THREE.Vector3(0, 1, 0);
-        const surfaceNormal = marker.position.clone().normalize();
-        ring.quaternion.setFromUnitVectors(up, surfaceNormal);
-
-        // Chandrayaan-3 Orbiter
-        const orbiterGroup = new THREE.Group();
-
-        const bodyGeo = new THREE.BoxGeometry(1, 1, 1.5);
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, roughness: 0.3, metalness: 0.8 });
-        const body = new THREE.Mesh(bodyGeo, bodyMat);
-        orbiterGroup.add(body);
-
-        const panelGeo = new THREE.BoxGeometry(4, 0.1, 1);
-        const panelMat = new THREE.MeshStandardMaterial({ color: 0x0055ff, roughness: 0.1, metalness: 0.5 });
-        const panels = new THREE.Mesh(panelGeo, panelMat);
-        orbiterGroup.add(panels);
-
-        // Laser Altimeter Beam (Green)
-        const laserGeo = new THREE.CylinderGeometry(0.02, 0.02, 15, 8);
-        const laserMat = new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.6 });
-        const laser = new THREE.Mesh(laserGeo, laserMat);
-        // Position laser so it points straight down from the satellite
-        laser.position.set(0, -7.5, 0);
-        orbiterGroup.add(laser);
-
-        scene.add(orbiterGroup);
-
-        // Polar Orbital Ring Path
-        const satRadius = 35;
-        const orbitGeometry = new THREE.TorusGeometry(satRadius, 0.05, 32, 100);
-        const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.3 });
-        const orbitRing = new THREE.Mesh(orbitGeometry, orbitMaterial);
+        const surfaceNormal = target.position.clone().normalize();
+        targetRing.quaternion.setFromUnitVectors(up, surfaceNormal);
         
-        // Accurate Polar Orbit (90 deg inclination roughly)
-        orbitRing.rotation.x = Math.PI / 2;
-        orbitRing.rotation.y = Math.PI / 2; // Flip to go over the poles
-        scene.add(orbitRing);
+        surfaceGroup.add(target);
+
+        // ==========================================
+        // Animated A* Rover Traverse Path
+        // ==========================================
+        
+        // Create a curvy path simulating avoiding craters (A* path)
+        const pathPoints = [];
+        const numPoints = 50;
+        const startLat = -84.0 * (Math.PI / 180); // Landing site
+        const startLon = 25.0 * (Math.PI / 180);
+        
+        for (let i = 0; i <= numPoints; i++) {
+            const t = i / numPoints;
+            // Interpolate lat/lon
+            let currentLat = startLat + (lat - startLat) * t;
+            let currentLon = startLon + (lon - startLon) * t;
+            
+            // Add noise/curves to simulate hazard avoidance
+            const noise = Math.sin(t * Math.PI * 4) * 0.02 * (1-t);
+            currentLon += noise;
+
+            const pos = new THREE.Vector3().setFromSphericalCoords(moonRadius + 0.02, Math.PI / 2 - currentLat, currentLon);
+            pathPoints.push(pos);
+        }
+
+        const pathGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
+        const pathMaterial = new THREE.LineBasicMaterial({ color: 0x3b82f6, linewidth: 2, transparent: true, opacity: 0.8 });
+        const traversePath = new THREE.Line(pathGeometry, pathMaterial);
+        surfaceGroup.add(traversePath);
+
+        // Rover Mesh
+        const roverGeo = new THREE.BoxGeometry(0.4, 0.3, 0.5);
+        const roverMat = new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.4, metalness: 0.8 });
+        const rover = new THREE.Mesh(roverGeo, roverMat);
+        surfaceGroup.add(rover);
 
         // Starfield
         const starGeometry = new THREE.BufferGeometry();
@@ -166,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
 
             raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObject(marker);
+            const intersects = raycaster.intersectObject(target);
 
             if (intersects.length > 0) {
                 tooltip.style.display = 'block';
@@ -183,14 +190,14 @@ document.addEventListener('DOMContentLoaded', () => {
             tooltip.style.display = 'none';
         });
 
-        // Cinematic Fly-In
+        // Cinematic Fly-In focused on South Pole
         if (typeof gsap !== 'undefined') {
             gsap.to(camera.position, {
-                x: 30,
-                y: -15, // Look at south pole
-                z: 30,
+                x: 0,
+                y: -15, // South pole approach
+                z: 25,
                 duration: 5,
-                ease: "power3.inOut",
+                ease: "power2.out",
                 onUpdate: () => controls.update()
             });
         }
@@ -210,28 +217,38 @@ document.addEventListener('DOMContentLoaded', () => {
             const delta = clock.getDelta();
             time += delta;
 
-            moon.rotation.y += 0.05 * delta;
+            // Slow moon rotation
+            moon.rotation.y += 0.02 * delta;
 
-            const scale = 1 + Math.sin(time * 3) * 0.4;
-            ring.scale.set(scale, scale, scale);
-            ring.material.opacity = 1 - (scale - 0.5) * 0.5;
+            // Pulse target ring
+            const scale = 1 + Math.sin(time * 4) * 0.3;
+            targetRing.scale.set(scale, scale, scale);
+            targetRing.material.opacity = 1 - (scale - 0.5) * 0.5;
 
-            // Polar Orbit calculation
-            const satAngle = time * 0.3;
-            // Orbiting over poles (y and z axis mostly, with x offset for inclination)
-            orbiterGroup.position.x = 0;
-            orbiterGroup.position.y = satRadius * Math.cos(satAngle);
-            orbiterGroup.position.z = satRadius * Math.sin(satAngle);
+            // Animate Rover along A* Path
+            const journeyTime = 20; // seconds to complete path
+            let progress = (time % journeyTime) / journeyTime;
             
-            // Orient satellite so bottom faces the moon center
-            orbiterGroup.lookAt(new THREE.Vector3(0,0,0));
-            // Rotate the group so it flies forward along the orbit path rather than "falling"
-            orbiterGroup.rotateX(Math.PI / 2);
+            // Calculate exact position on curve
+            const ptIndex = progress * (numPoints - 1);
+            const idx = Math.floor(ptIndex);
+            const fraction = ptIndex - idx;
+            
+            if (idx < numPoints - 1) {
+                const p1 = pathPoints[idx];
+                const p2 = pathPoints[idx + 1];
+                rover.position.lerpVectors(p1, p2, fraction);
+                
+                // Orient rover to look at next point
+                const upVec = rover.position.clone().normalize();
+                const lookMatrix = new THREE.Matrix4().lookAt(rover.position, p2, upVec);
+                rover.quaternion.setFromRotationMatrix(lookMatrix);
+            }
 
-            // Blink laser altimeter
-            laser.material.opacity = (Math.sin(time * 20) > 0) ? 0.6 : 0.0;
+            // Path blinking effect
+            traversePath.material.opacity = 0.5 + Math.sin(time * 5) * 0.3;
 
-            stars.rotation.y += 0.02 * delta;
+            stars.rotation.y += 0.01 * delta;
 
             controls.update();
             renderer.render(scene, camera);

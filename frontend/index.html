@@ -6,9 +6,9 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Chandrayaan-3 | Mission Control</title>
+    <title>Chandrayaan-2 | Faustini Subsurface Ice Mission</title>
     <!-- Cache-busting query parameter for CSS -->
-    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="styles.css?v=6">
     
     <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -21,13 +21,13 @@
         <!-- Sidebar Navigation -->
         <nav class="sidebar glass-panel">
             <div class="logo">
-                <h2>ISRO<span>C3</span></h2>
-                <p>Shiv Shakti Mission</p>
+                <h2>ISRO<span>C2</span></h2>
+                <p>Faustini PSR Mission</p>
             </div>
             <ul class="nav-links">
                 <li class="active">Mission Dashboard</li>
                 <li><a href="#analysis-report" style="text-decoration: none; color: inherit;">Analysis Report</a></li>
-                <li><a href="#3d-orbit" style="text-decoration: none; color: inherit;">WebGL Orbital Simulation</a></li>
+                <li><a href="#3d-orbit" style="text-decoration: none; color: inherit;">WebGL Traverse Simulation</a></li>
             </ul>
         </nav>
 
@@ -35,8 +35,8 @@
         <main class="main-content">
             <header class="top-bar">
                 <div class="title-section">
-                    <h1>Mission Operations Center</h1>
-                    <p class="subtitle">Live from Shiv Shakti Point (69.373° S, 32.319° E)</p>
+                    <h1>Subsurface Ice & Traverse Command</h1>
+                    <p class="subtitle">Target: Faustini Crater (Doubly Shadowed Region - Lobate Rim)</p>
                 </div>
                 <div class="status-indicator">
                     <span class="dot pulse"></span>
@@ -48,10 +48,10 @@
                 <!-- Cosmos Chronicle Live Data -->
                 <div class="card glass-panel radar-scan" id="cosmos-data">
                     <div class="scan-line"></div>
-                    <h3>Environment Telemetry</h3>
+                    <h3>Faustini PSR Telemetry</h3>
                     <div class="telemetry-grid">
                         <div class="stat">
-                            <span class="label">Surface Temp</span>
+                            <span class="label">Surface Temp (DSR)</span>
                             <span class="value" id="temp-val">-- K</span>
                         </div>
                         <div class="stat">
@@ -59,7 +59,7 @@
                             <span class="value" id="solar-val">--°</span>
                         </div>
                         <div class="stat">
-                            <span class="label">Power Status</span>
+                            <span class="label">Hazard Level</span>
                             <span class="value success" id="power-val">Optimal</span>
                         </div>
                     </div>
@@ -68,35 +68,35 @@
                 <!-- NEW: Machine Learning Inference Card -->
                 <div class="card glass-panel highlight-card radar-scan">
                     <div class="scan-line" style="animation-delay: 1.5s;"></div>
-                    <h3>AI Ice Probability (Random Forest)</h3>
+                    <h3>AI Ice Probability (CH-2 DFSAR L/S-Band)</h3>
                     <div class="ice-stats">
                         <div class="main-stat">
-                            <h2 id="ml-prob">94.2<span class="unit">%</span></h2>
+                            <h2 id="ml-prob">96.5<span class="unit">%</span></h2>
                             <p>Confidence: <span style="color:var(--success);font-weight:bold;">HIGH</span></p>
                         </div>
                         <div class="sub-stats">
-                            <p><strong>Model:</strong> scikit-learn RandomForestClassifier</p>
-                            <p><strong>Features:</strong> CPR, DOP, Slope, Temperature</p>
-                            <p><strong>Vol:</strong> ~18,800 m³ (Birchak Model)</p>
+                            <p><strong>Model:</strong> RandomForest (Hazard & Power Constraints)</p>
+                            <p><strong>Features:</strong> CPR, DOP, Slope (< 5°), Illumination (> 70%)</p>
+                            <p><strong>Target:</strong> Subsurface Ice beneath crater floor</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3D Visualization Embed -->
                 <div class="card glass-panel map-card" id="3d-orbit">
-                    <h3>Chandrayaan-3 Orbital Mechanics & Polar Tracking</h3>
+                    <h3>Optimal Rover Traverse Path Simulation (A* Algorithm)</h3>
                     <div id="webgl-container" class="iframe-container" style="position: relative;">
                         <!-- Interactive 3D HUD Tooltip -->
                         <div id="hud-tooltip" class="hud-tooltip glass-panel" style="display: none; position: absolute; z-index: 20;">
-                            <h4>Shiv Shakti Point</h4>
-                            <p>Lat: -69.373° S</p>
-                            <p>Lon: 32.319° E</p>
-                            <p class="status">Status: <span>Ice Probability 94%</span></p>
+                            <h4>Faustini DSR</h4>
+                            <p>Target: Lobate Rim Crater</p>
+                            <p>Optimal Path: Corridor D</p>
+                            <p class="status">Status: <span>Ice Probability 96%</span></p>
                         </div>
                         <!-- WebGL Canvas injected here by app.js -->
                         <div id="loading-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #020617; color: #3b82f6; z-index: 10;">
                             <h2 style="margin-bottom: 10px; font-family: 'Fira Code', monospace;">Initializing Deep Space Network...</h2>
-                            <p style="font-family: 'Fira Code', monospace;">Loading Photorealistic Textures & Polar Mechanics</p>
+                            <p style="font-family: 'Fira Code', monospace;">Loading Faustini Topography & Traverse Mechanics</p>
                         </div>
                     </div>
                 </div>
@@ -164,6 +164,6 @@
         </main>
     </div>
     <!-- Cache-busting query parameter for JS -->
-    <script src="app.js?v=5"></script>
+    <script src="app.js?v=6"></script>
 </body>
 </html>

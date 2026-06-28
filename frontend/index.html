@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Chandrayaan-3 | DFSAR Mission Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- Cache-busting query parameter for CSS -->
+    <link rel="stylesheet" href="styles.css?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -18,7 +25,7 @@
             <ul class="nav-links">
                 <li class="active">Mission Dashboard</li>
                 <li><a href="#analysis-report" style="text-decoration: none; color: inherit;">Analysis Report</a></li>
-                <li><a href="#3d-orbit" style="text-decoration: none; color: inherit;">3D Orbital Scan</a></li>
+                <li><a href="#3d-orbit" style="text-decoration: none; color: inherit;">WebGL Orbital Simulation</a></li>
             </ul>
         </nav>
 
@@ -37,7 +44,8 @@
 
             <div class="dashboard-grid">
                 <!-- Cosmos Chronicle Live Data -->
-                <div class="card glass-panel" id="cosmos-data">
+                <div class="card glass-panel radar-scan" id="cosmos-data">
+                    <div class="scan-line"></div>
                     <h3>Environment Telemetry</h3>
                     <div class="telemetry-grid">
                         <div class="stat">
@@ -56,7 +64,8 @@
                 </div>
 
                 <!-- Ice Volume Results -->
-                <div class="card glass-panel highlight-card">
+                <div class="card glass-panel highlight-card radar-scan">
+                    <div class="scan-line" style="animation-delay: 1.5s;"></div>
                     <h3>Lunar Ice Volume (Birchak/CRIM Model)</h3>
                     <div class="ice-stats">
                         <div class="main-stat">
@@ -70,12 +79,14 @@
                     </div>
                 </div>
 
-                <!-- 3D Visualization Embed -->
+                <!-- 3D Visualization Embed (Replaced Plotly with native WebGL Container) -->
                 <div class="card glass-panel map-card" id="3d-orbit">
-                    <h3>3D DFSAR Orbital Scan</h3>
-                    <div class="iframe-container">
-                        <!-- Plotly HTML will be embedded here -->
-                        <iframe src="3d_crater.html" frameborder="0" width="100%" height="100%"></iframe>
+                    <h3>Chandrayaan-3 Orbital Mechanics & Surface Tracking</h3>
+                    <div id="webgl-container" class="iframe-container" style="position: relative;">
+                        <!-- WebGL Canvas injected here by app.js -->
+                        <div id="loading-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: #000; color: #3b82f6; z-index: 10;">
+                            <h2>Initializing ISRO Deep Space Network Link...</h2>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,6 +152,7 @@
             </section>
         </main>
     </div>
-    <script src="app.js"></script>
+    <!-- Cache-busting query parameter for JS -->
+    <script src="app.js?v=3"></script>
 </body>
 </html>

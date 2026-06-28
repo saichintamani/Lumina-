@@ -32,6 +32,8 @@ body {
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
     border-radius: 16px;
+    position: relative;
+    overflow: hidden;
 }
 
 .app-container {
@@ -49,6 +51,7 @@ body {
     position: sticky;
     top: 0;
     height: 100vh;
+    z-index: 100;
 }
 
 .logo h2 {
@@ -146,6 +149,7 @@ body {
 
 .card {
     padding: 2rem;
+    z-index: 1;
 }
 
 .card h3 {
@@ -202,6 +206,24 @@ body {
     color: var(--text-muted);
 }
 
+/* Radar Scan Animation */
+.radar-scan .scan-line {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.15), transparent);
+    animation: scan 4s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes scan {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
 .map-card {
     grid-column: 1 / -1;
     height: 600px;
@@ -214,6 +236,13 @@ body {
     border-radius: 8px;
     overflow: hidden;
     background: #000;
+}
+
+/* WebGL Canvas overriding standard behaviour */
+#webgl-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
 }
 
 /* Scientific Analysis Report Section */
@@ -250,7 +279,6 @@ body {
     flex-direction: column;
     padding: 1rem;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-    overflow: hidden;
     cursor: zoom-in;
 }
 

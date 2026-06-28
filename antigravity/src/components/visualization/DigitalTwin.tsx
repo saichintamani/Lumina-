@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, useTexture, Sphere, Html, Line } from '@react-three/drei';
+import { OrbitControls, Stars, Sphere, Html, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
 import gsap from 'gsap';
@@ -60,8 +60,6 @@ function CinematicCameraController() {
 // Moon Object & Shaders
 // ----------------------------------------------------
 function MoonModel() {
-  const colorMap = useTexture('/moon_color.jpg');
-  const dispMap = useTexture('/moon_disp.jpg');
   const { currentPhase, timeOfDay } = useCinematicEngine();
   const moonRef = useRef<THREE.Mesh>(null);
 
@@ -74,13 +72,12 @@ function MoonModel() {
   return (
     <group>
       {/* Base Moon */}
-      <Sphere ref={moonRef} args={[1.5, 128, 128]} position={[0, 0, 0]}>
+      <Sphere ref={moonRef} args={[1.5, 64, 64]} position={[0, 0, 0]}>
         <meshStandardMaterial 
-          map={colorMap} 
-          displacementMap={dispMap}
-          displacementScale={0.05}
+          color="#888888"
           roughness={0.9}
           metalness={0.1}
+          wireframe={currentPhase === 'TERRAIN_GENERATION'}
         />
       </Sphere>
 

@@ -31,6 +31,10 @@ export interface TelemetryState {
   // First-Person Camera
   cameraMode: 'ORBIT' | 'FIRST_PERSON';
   toggleCameraMode: () => void;
+
+  // Latency Simulator
+  latencyMode: boolean;
+  toggleLatencyMode: () => void;
 }
 
 export const useTelemetryStore = create<TelemetryState>((set) => ({
@@ -57,4 +61,7 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
 
   cameraMode: 'ORBIT',
   toggleCameraMode: () => set((state) => ({ cameraMode: state.cameraMode === 'ORBIT' ? 'FIRST_PERSON' : 'ORBIT' })),
+
+  latencyMode: false,
+  toggleLatencyMode: () => set((state) => ({ latencyMode: !state.latencyMode })),
 }));

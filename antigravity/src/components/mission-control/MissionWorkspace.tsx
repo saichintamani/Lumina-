@@ -17,6 +17,7 @@ import { useAudioSettingsStore } from '@/lib/audio/useAudioSettingsStore';
 import { Volume2, VolumeX } from 'lucide-react';
 import GlitchOverlay from '@/components/effects/GlitchOverlay';
 import { ComputerVisionHUD } from '@/components/effects/ComputerVisionHUD';
+import { LatencyHUD } from '@/components/effects/LatencyHUD';
 
 // Custom Resize Handle
 const ResizeHandle = () => (
@@ -98,6 +99,7 @@ export default function MissionWorkspace() {
               <Panel defaultSize={80} minSize={50} className="relative bg-black">
                 <DigitalTwin />
                 <ComputerVisionHUD />
+                <LatencyHUD />
                 
                 {/* Top Left: Camera Status */}
                 <div className="absolute top-4 left-4 z-10 pointer-events-none">

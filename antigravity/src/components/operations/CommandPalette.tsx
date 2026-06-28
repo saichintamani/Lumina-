@@ -13,7 +13,7 @@ export default function CommandPalette() {
   const { jumpToPhase, currentPhase } = useCinematicEngine();
   const { recordDecision, decisionHistory } = useMissionMemory();
   const { activeScenarioId, scenarios } = useScenarioManager();
-  const { triggerSolarFlare, resolveSolarFlare, spaceWeather, swarmActive, toggleSwarm, toggleCameraMode } = useTelemetryStore();
+  const { triggerSolarFlare, resolveSolarFlare, spaceWeather, swarmActive, toggleSwarm, toggleCameraMode, latencyMode, toggleLatencyMode } = useTelemetryStore();
 
   // Toggle the menu when Cmd+K or Ctrl+K is pressed
   useEffect(() => {
@@ -84,6 +84,13 @@ export default function CommandPalette() {
                 className="flex items-center px-2 py-3 rounded hover:bg-slate-800 text-slate-300 hover:text-white cursor-pointer font-mono text-sm"
               >
                 <Camera size={14} className="mr-3 text-amber-400" /> Toggle NavCam (First-Person View)
+              </Command.Item>
+
+              <Command.Item 
+                onSelect={() => { toggleLatencyMode(); setOpen(false); }}
+                className="flex items-center px-2 py-3 rounded hover:bg-slate-800 text-slate-300 hover:text-white cursor-pointer font-mono text-sm"
+              >
+                <Clock size={14} className="mr-3 text-red-400" /> {latencyMode ? 'Disable' : 'Enable'} Earth-Moon Latency Simulator
               </Command.Item>
 
               <Command.Item 

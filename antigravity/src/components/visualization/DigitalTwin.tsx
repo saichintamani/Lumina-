@@ -158,8 +158,13 @@ function MoonModel() {
 
   // Manual Override States
   const setRoverPosition = useTelemetryStore(state => state.setRoverPosition);
+  const latencyMode = useTelemetryStore(state => state.latencyMode);
   const roverControls = useRoverControls();
   const manualRoverPos = useRef(new THREE.Vector3(0, -1.48, 0.2));
+  
+  // Latency Simulator Buffer
+  const commandQueue = useRef<{ time: number, state: any }[]>([]);
+  const lastActiveControls = useRef({ forward: false, backward: false, left: false, right: false });
 
   useFrame(({ clock }) => {
     const elapsedTime = clock.getElapsedTime();
@@ -198,12 +203,32 @@ function MoonModel() {
     // Rover Traverse Animation & Manual Override
     if (roverRef.current) {
       if (currentPhase === 'MANUAL_OVERRIDE') {
+        
+        let activeControls = { forward: false, backward: false, left: false, right: false };
+
+        if (latencyMode) {
+          commandQueue.current.push({
+            time: Date.now() + 2600, // 2.6s Round Trip Time
+            state: { ...roverControls }
+          });
+          
+          const now = Date.now();
+          while (commandQueue.current.length > 0 && commandQueue.current[0].time <= now) {
+            lastActiveControls.current = commandQueue.current.shift()!.state;
+          }
+          activeControls = lastActiveControls.current;
+        } else {
+          activeControls = roverControls;
+          // Clear queue if toggled off
+          if (commandQueue.current.length > 0) commandQueue.current = [];
+        }
+
         // Apply WASD controls
         const speed = 0.0005;
-        if (roverControls.forward) manualRoverPos.current.z -= speed;
-        if (roverControls.backward) manualRoverPos.current.z += speed;
-        if (roverControls.left) manualRoverPos.current.x -= speed;
-        if (roverControls.right) manualRoverPos.current.x += speed;
+        if (activeControls.forward) manualRoverPos.current.z -= speed;
+        if (activeControls.backward) manualRoverPos.current.z += speed;
+        if (activeControls.left) manualRoverPos.current.x -= speed;
+        if (activeControls.right) manualRoverPos.current.x += speed;
 
         // Keep it glued to the sphere surface (radius ~ 1.48 in this region)
         // Normalize vector and multiply by radius

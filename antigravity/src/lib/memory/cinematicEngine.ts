@@ -8,7 +8,8 @@ export type MissionPhase =
   | 'AI_REASONING'
   | 'LANDING_SIMULATION'
   | 'TRAVERSE_PLANNING'
-  | 'MISSION_SUCCESS';
+  | 'MISSION_SUCCESS'
+  | 'MANUAL_OVERRIDE';
 
 export interface CameraState {
   position: [number, number, number];
@@ -41,7 +42,8 @@ const PHASE_ORDER: MissionPhase[] = [
   'AI_REASONING',
   'LANDING_SIMULATION',
   'TRAVERSE_PLANNING',
-  'MISSION_SUCCESS'
+  'MISSION_SUCCESS',
+  'MANUAL_OVERRIDE'
 ];
 
 export const useCinematicEngine = create<CinematicState>((set) => ({

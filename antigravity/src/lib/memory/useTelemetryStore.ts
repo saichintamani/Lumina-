@@ -1,11 +1,18 @@
 import { create } from 'zustand';
 
-interface TelemetryState {
+export interface TelemetryState {
+  // Camera Position (used by Mini-Map)
   cameraPosition: [number, number, number];
   setCameraPosition: (pos: [number, number, number]) => void;
+
+  // Rover Position (used for Manual Override Third-Person Camera)
+  roverPosition: [number, number, number];
+  setRoverPosition: (pos: [number, number, number]) => void;
 }
 
 export const useTelemetryStore = create<TelemetryState>((set) => ({
   cameraPosition: [0, 0, 10],
-  setCameraPosition: (pos) => set({ cameraPosition: pos })
+  setCameraPosition: (pos) => set({ cameraPosition: pos }),
+  roverPosition: [0, -1.48, 0.2],
+  setRoverPosition: (pos) => set({ roverPosition: pos }),
 }));

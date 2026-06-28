@@ -88,6 +88,12 @@ export default function CommandPalette() {
               >
                 <FastForward size={14} className="mr-3" /> Jump to Traverse Planning
               </Command.Item>
+              <Command.Item 
+                onSelect={() => { jumpToPhase('MANUAL_OVERRIDE'); setOpen(false); }}
+                className="flex items-center px-2 py-3 rounded hover:bg-pink-500/20 text-slate-300 hover:text-pink-400 cursor-pointer font-mono text-sm"
+              >
+                <Activity size={14} className="mr-3" /> Engage Manual Override (WASD Driving)
+              </Command.Item>
             </Command.Group>
 
             <Command.Group heading="Data Management" className="text-xs font-mono text-slate-500 mb-2 px-2 py-1">

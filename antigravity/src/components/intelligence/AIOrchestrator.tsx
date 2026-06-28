@@ -62,6 +62,17 @@ export default function AIOrchestrator() {
           });
           speak("Mission Success. Transitioned to Autonomous Surface Execution.");
           break;
+        case 'MANUAL_OVERRIDE':
+          recordDecision({
+            what: 'Engaged Manual Teleoperation Override',
+            why: 'Human operator requested direct kinetic control of the Pragyan rover.',
+            evidence: ['Override command received from Mission Control.', 'Subsystems nominal for manual operation.'],
+            confidence: 1.0,
+            assumptions: ['Operator assumes full responsibility for hazard avoidance.'],
+            limitations: ['Earth-Moon 1.3 second light delay is bypassed for simulation purposes.']
+          });
+          speak("Warning. Autonomy disabled. Manual override engaged. You have the conn.");
+          break;
       }
     }, 2000); // 2 second thinking delay
 

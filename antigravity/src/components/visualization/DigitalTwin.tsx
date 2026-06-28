@@ -8,6 +8,7 @@ import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
 import { useVisualLayers } from '@/lib/memory/visualLayerManager';
 import gsap from 'gsap';
 import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
+import { useRoverControls } from '@/lib/controls/useRoverControls';
 
 // ----------------------------------------------------
 // Cinematic Camera Controller
@@ -16,10 +17,35 @@ function CinematicCameraController() {
   const { currentPhase } = useCinematicEngine();
   const cameraRef = useRef<any>(null);
   const setCameraPosition = useTelemetryStore(state => state.setCameraPosition);
+  const roverPosition = useTelemetryStore(state => state.roverPosition);
 
   useFrame(() => {
     if (cameraRef.current) {
       setCameraPosition(cameraRef.current.object.position.toArray());
+
+      // Third-Person Follow Camera logic for MANUAL_OVERRIDE
+      if (currentPhase === 'MANUAL_OVERRIDE') {
+        const camera = cameraRef.current.object;
+        const controls = cameraRef.current;
+        
+        // Calculate a position slightly behind and above the rover
+        // Rover is roughly around [0, -1.48, 0.2]
+        const offset = new THREE.Vector3(0, 0.05, -0.15); // Offset relative to rover
+        
+        // Since rover is mostly on the bottom hemisphere, let's just use absolute positioning for now
+        // to keep it simple, pushing the camera "up" (y) and "back" (z) from the rover's position.
+        const targetCamPos = new THREE.Vector3(
+          roverPosition[0], 
+          roverPosition[1] + 0.1, 
+          roverPosition[2] + 0.15
+        );
+
+        const targetLookAt = new THREE.Vector3(...roverPosition);
+
+        // Smoothly interpolate (lerp) camera position and lookAt target
+        camera.position.lerp(targetCamPos, 0.05);
+        controls.target.lerp(targetLookAt, 0.05);
+      }
     }
   });
 
@@ -37,7 +63,8 @@ function CinematicCameraController() {
       'AI_REASONING': { pos: [0.2, 1.55, 0.2], target: [0, 1.5, 0] },
       'LANDING_SIMULATION': { pos: [0.05, 1.52, 0.05], target: [0, 1.5, 0] },
       'TRAVERSE_PLANNING': { pos: [0.02, 1.51, 0.02], target: [0, 1.5, 0] },
-      'MISSION_SUCCESS': { pos: [2, 1, 4], target: [0, 0, 0] }
+      'MISSION_SUCCESS': { pos: [2, 1, 4], target: [0, 0, 0] },
+      'MANUAL_OVERRIDE': { pos: [0, -1.38, 0.35], target: [0, -1.48, 0.2] } // Initial jump to rover
     };
 
     const targetKeyframe = keyframes[currentPhase];
@@ -62,7 +89,17 @@ function CinematicCameraController() {
 
   }, [currentPhase]);
 
-  return <OrbitControls ref={cameraRef} enableZoom={true} enablePan={true} maxDistance={20} minDistance={1.05} />;
+  // Disable orbit controls during manual override so WASD takes full control
+  return (
+    <OrbitControls 
+      ref={cameraRef} 
+      enableZoom={currentPhase !== 'MANUAL_OVERRIDE'} 
+      enablePan={currentPhase !== 'MANUAL_OVERRIDE'} 
+      enableRotate={currentPhase !== 'MANUAL_OVERRIDE'} 
+      maxDistance={20} 
+      minDistance={1.05} 
+    />
+  );
 }
 
 // ----------------------------------------------------
@@ -80,6 +117,11 @@ function MoonModel() {
   const orbiterRef = useRef<THREE.Mesh>(null);
   const dataLinkRef = useRef<any>(null);
   const roverRef = useRef<THREE.Mesh>(null);
+
+  // Manual Override States
+  const setRoverPosition = useTelemetryStore(state => state.setRoverPosition);
+  const roverControls = useRoverControls();
+  const manualRoverPos = useRef(new THREE.Vector3(0, -1.48, 0.2));
 
   useFrame(({ clock }) => {
     const elapsedTime = clock.getElapsedTime();
@@ -115,28 +157,48 @@ function MoonModel() {
       }
     }
 
-    // Rover Traverse Animation
-    if (roverRef.current && (currentPhase === 'TRAVERSE_PLANNING' || currentPhase === 'MISSION_SUCCESS')) {
-      const path = [
-        [0, -1.48, 0.2],
-        [0.05, -1.47, 0.22],
-        [0.08, -1.46, 0.25],
-        [0.1, -1.45, 0.3]
-      ];
-      // Simple ping-pong animation along the 4 points
-      const t = (Math.sin(elapsedTime * 0.5) + 1) / 2; // 0 to 1
-      const totalSegments = path.length - 1;
-      const segment = Math.floor(t * totalSegments);
-      const segmentT = (t * totalSegments) - segment;
-      
-      if (segment < totalSegments) {
-        const start = path[segment];
-        const end = path[segment + 1];
-        roverRef.current.position.set(
-          start[0] + (end[0] - start[0]) * segmentT,
-          start[1] + (end[1] - start[1]) * segmentT,
-          start[2] + (end[2] - start[2]) * segmentT
-        );
+    // Rover Traverse Animation & Manual Override
+    if (roverRef.current) {
+      if (currentPhase === 'MANUAL_OVERRIDE') {
+        // Apply WASD controls
+        const speed = 0.0005;
+        if (roverControls.forward) manualRoverPos.current.z -= speed;
+        if (roverControls.backward) manualRoverPos.current.z += speed;
+        if (roverControls.left) manualRoverPos.current.x -= speed;
+        if (roverControls.right) manualRoverPos.current.x += speed;
+
+        // Keep it glued to the sphere surface (radius ~ 1.48 in this region)
+        // Normalize vector and multiply by radius
+        manualRoverPos.current.normalize().multiplyScalar(1.48);
+
+        roverRef.current.position.copy(manualRoverPos.current);
+        setRoverPosition(roverRef.current.position.toArray());
+
+      } else if (currentPhase === 'TRAVERSE_PLANNING' || currentPhase === 'MISSION_SUCCESS') {
+        const path = [
+          [0, -1.48, 0.2],
+          [0.05, -1.47, 0.22],
+          [0.08, -1.46, 0.25],
+          [0.1, -1.45, 0.3]
+        ];
+        // Simple ping-pong animation along the 4 points
+        const t = (Math.sin(elapsedTime * 0.5) + 1) / 2; // 0 to 1
+        const totalSegments = path.length - 1;
+        const segment = Math.floor(t * totalSegments);
+        const segmentT = (t * totalSegments) - segment;
+        
+        if (segment < totalSegments) {
+          const start = path[segment];
+          const end = path[segment + 1];
+          roverRef.current.position.set(
+            start[0] + (end[0] - start[0]) * segmentT,
+            start[1] + (end[1] - start[1]) * segmentT,
+            start[2] + (end[2] - start[2]) * segmentT
+          );
+          setRoverPosition(roverRef.current.position.toArray());
+          // Sync manual pos to end of animation so it doesn't snap if they override
+          manualRoverPos.current.copy(roverRef.current.position);
+        }
       }
     }
   });
@@ -221,7 +283,7 @@ function MoonModel() {
       )}
 
       {/* Traverse Path & Rover Visualization */}
-      {(currentPhase === 'TRAVERSE_PLANNING' || showMissionRoute || currentPhase === 'MISSION_SUCCESS') && (
+      {(currentPhase === 'TRAVERSE_PLANNING' || showMissionRoute || currentPhase === 'MISSION_SUCCESS' || currentPhase === 'MANUAL_OVERRIDE') && (
         <>
           <Line
             points={[
@@ -234,12 +296,14 @@ function MoonModel() {
             lineWidth={3}
             dashed={true}
           />
-          {/* Animated Rover Blip */}
-          <mesh ref={roverRef}>
+          {/* Animated/Manual Rover Blip */}
+          <mesh ref={roverRef} position={[0, -1.48, 0.2]}>
             <sphereGeometry args={[0.005, 8, 8]} />
-            <meshBasicMaterial color="#00ff00" />
+            <meshBasicMaterial color={currentPhase === 'MANUAL_OVERRIDE' ? "#ff00ff" : "#00ff00"} />
             <Html center position={[0, -0.02, 0]}>
-              <div className="text-[6px] font-mono text-green-400 font-bold whitespace-nowrap animate-pulse">PRAGYAN_ACTV</div>
+              <div className={`text-[6px] font-mono font-bold whitespace-nowrap animate-pulse ${currentPhase === 'MANUAL_OVERRIDE' ? 'text-pink-500' : 'text-green-400'}`}>
+                {currentPhase === 'MANUAL_OVERRIDE' ? 'PRAGYAN_MANUAL' : 'PRAGYAN_ACTV'}
+              </div>
             </Html>
           </mesh>
         </>

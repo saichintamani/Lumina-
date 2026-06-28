@@ -9,6 +9,7 @@ import { useVisualLayers } from '@/lib/memory/visualLayerManager';
 import gsap from 'gsap';
 import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
 import { useRoverControls } from '@/lib/controls/useRoverControls';
+import LunarDustEngine from './LunarDustEngine';
 
 // ----------------------------------------------------
 // Cinematic Camera Controller
@@ -306,6 +307,7 @@ function MoonModel() {
               </div>
             </Html>
           </mesh>
+          <LunarDustEngine />
         </>
       )}
 

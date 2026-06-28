@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
 import { useVisualLayers } from '@/lib/memory/visualLayerManager';
 import gsap from 'gsap';
+import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
 
 // ----------------------------------------------------
 // Cinematic Camera Controller
@@ -14,6 +15,13 @@ import gsap from 'gsap';
 function CinematicCameraController() {
   const { currentPhase } = useCinematicEngine();
   const cameraRef = useRef<any>(null);
+  const setCameraPosition = useTelemetryStore(state => state.setCameraPosition);
+
+  useFrame(() => {
+    if (cameraRef.current) {
+      setCameraPosition(cameraRef.current.object.position.toArray());
+    }
+  });
 
   useEffect(() => {
     if (!cameraRef.current) return;
@@ -68,12 +76,67 @@ function MoonModel() {
   // Load realistic lunar textures
   const texture = useTexture('/moon_color.jpg');
 
-  useFrame(() => {
+  // Orbiter & Rover References
+  const orbiterRef = useRef<THREE.Mesh>(null);
+  const dataLinkRef = useRef<any>(null);
+  const roverRef = useRef<THREE.Mesh>(null);
+
+  useFrame(({ clock }) => {
+    const elapsedTime = clock.getElapsedTime();
+
     if (moonGroupRef.current) {
       // Continuous beautiful rotation for the whole lunar globe
-      // Stop rotation during close-up phases for precise planning
       if (['INITIALIZING', 'ORBITAL_INSERTION'].includes(currentPhase)) {
         moonGroupRef.current.rotation.y += 0.001; 
+      }
+    }
+
+    // Orbiter Simulation (Fast Polar Orbit)
+    if (orbiterRef.current && dataLinkRef.current) {
+      const radius = 2.2;
+      const speed = 0.5;
+      const x = 0;
+      const y = Math.sin(elapsedTime * speed) * radius;
+      const z = Math.cos(elapsedTime * speed) * radius;
+      
+      orbiterRef.current.position.set(x, y, z);
+
+      // Data link active only when orbiter is above the southern hemisphere (y < 0)
+      if (y < 0) {
+        dataLinkRef.current.visible = true;
+        // The array of points must be dynamically updated. 
+        // In three.js geometry we can update positions:
+        const positions = dataLinkRef.current.geometry.attributes.position.array;
+        positions[0] = x; positions[1] = y; positions[2] = z; // Orbiter
+        positions[3] = 0; positions[4] = -1.48; positions[5] = 0.2; // Faustini
+        dataLinkRef.current.geometry.attributes.position.needsUpdate = true;
+      } else {
+        dataLinkRef.current.visible = false;
+      }
+    }
+
+    // Rover Traverse Animation
+    if (roverRef.current && (currentPhase === 'TRAVERSE_PLANNING' || currentPhase === 'MISSION_SUCCESS')) {
+      const path = [
+        [0, -1.48, 0.2],
+        [0.05, -1.47, 0.22],
+        [0.08, -1.46, 0.25],
+        [0.1, -1.45, 0.3]
+      ];
+      // Simple ping-pong animation along the 4 points
+      const t = (Math.sin(elapsedTime * 0.5) + 1) / 2; // 0 to 1
+      const totalSegments = path.length - 1;
+      const segment = Math.floor(t * totalSegments);
+      const segmentT = (t * totalSegments) - segment;
+      
+      if (segment < totalSegments) {
+        const start = path[segment];
+        const end = path[segment + 1];
+        roverRef.current.position.set(
+          start[0] + (end[0] - start[0]) * segmentT,
+          start[1] + (end[1] - start[1]) * segmentT,
+          start[2] + (end[2] - start[2]) * segmentT
+        );
       }
     }
   });
@@ -157,19 +220,50 @@ function MoonModel() {
         </group>
       )}
 
-      {/* Traverse Path Visualization (Appears during planning or if toggle is true) */}
-      {(currentPhase === 'TRAVERSE_PLANNING' || showMissionRoute) && (
-        <Line
-          points={[
-            [0, -1.48, 0.2],
-            [0.05, -1.47, 0.22],
-            [0.08, -1.46, 0.25],
-            [0.1, -1.45, 0.3]
-          ]}
-          color={showSlopeHeatmap ? "#ef4444" : "#3b82f6"} // Red route if hazards are on
-          lineWidth={3}
-          dashed={true}
-        />
+      {/* Traverse Path & Rover Visualization */}
+      {(currentPhase === 'TRAVERSE_PLANNING' || showMissionRoute || currentPhase === 'MISSION_SUCCESS') && (
+        <>
+          <Line
+            points={[
+              [0, -1.48, 0.2],
+              [0.05, -1.47, 0.22],
+              [0.08, -1.46, 0.25],
+              [0.1, -1.45, 0.3]
+            ]}
+            color={showSlopeHeatmap ? "#ef4444" : "#3b82f6"} // Red route if hazards are on
+            lineWidth={3}
+            dashed={true}
+          />
+          {/* Animated Rover Blip */}
+          <mesh ref={roverRef}>
+            <sphereGeometry args={[0.005, 8, 8]} />
+            <meshBasicMaterial color="#00ff00" />
+            <Html center position={[0, -0.02, 0]}>
+              <div className="text-[6px] font-mono text-green-400 font-bold whitespace-nowrap animate-pulse">PRAGYAN_ACTV</div>
+            </Html>
+          </mesh>
+        </>
+      )}
+
+      {/* Orbital Relay Satellite & Data Link */}
+      {currentPhase !== 'INITIALIZING' && (
+        <group>
+          <mesh ref={orbiterRef}>
+            <sphereGeometry args={[0.02, 16, 16]} />
+            <meshBasicMaterial color="#ffffff" />
+            <Html center position={[0, 0.05, 0]}>
+              <div className="bg-black/60 border border-slate-500/50 p-1 rounded backdrop-blur">
+                <p className="text-[8px] font-mono font-bold text-slate-200 whitespace-nowrap">CH2 ORBITER RELAY</p>
+              </div>
+            </Html>
+          </mesh>
+          <line ref={dataLinkRef}>
+            <bufferGeometry attach="geometry">
+              <float32BufferAttribute attach="attributes-position" args={[new Float32Array(6), 3]} />
+            </bufferGeometry>
+            <lineBasicMaterial attach="material" color="#3b82f6" transparent opacity={0.5} />
+          </line>
+        </group>
       )}
     </group>
   );

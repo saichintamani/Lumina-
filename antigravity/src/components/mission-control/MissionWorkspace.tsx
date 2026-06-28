@@ -10,6 +10,9 @@ import ExplanationCard from '@/components/intelligence/ExplanationCard';
 import { useMissionMemory } from '@/lib/memory/missionMemory';
 import { Command } from 'lucide-react';
 import Link from 'next/link';
+import SubsystemHUD from '@/components/mission-control/SubsystemHUD';
+import MiniMapHUD from '@/components/mission-control/MiniMapHUD';
+import { useTelemetryAudio } from '@/lib/audio/useTelemetryAudio';
 
 // Custom Resize Handle
 const ResizeHandle = () => (
@@ -27,6 +30,9 @@ const HorizontalResizeHandle = () => (
 export default function MissionWorkspace() {
   const { decisionHistory } = useMissionMemory();
   const [mounted, setMounted] = useState(false);
+  
+  // Initialize procedural audio
+  useTelemetryAudio();
 
   useEffect(() => {
     setMounted(true);
@@ -64,8 +70,20 @@ export default function MissionWorkspace() {
               {/* Top: 3D Digital Twin */}
               <Panel defaultSize={80} minSize={50} className="relative bg-black">
                 <DigitalTwin />
+                
+                {/* Top Left: Camera Status */}
                 <div className="absolute top-4 left-4 z-10 pointer-events-none">
                   <div className="text-xs font-mono text-slate-400 bg-slate-900/80 px-2 py-1 rounded">CAM_SYS: ORBITAL_1</div>
+                </div>
+
+                {/* Bottom Left: Subsystems */}
+                <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
+                  <SubsystemHUD />
+                </div>
+
+                {/* Top Right: Mini-Map Radar */}
+                <div className="absolute top-4 right-4 z-10 pointer-events-none">
+                  <MiniMapHUD />
                 </div>
               </Panel>
 

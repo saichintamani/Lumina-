@@ -5,6 +5,7 @@ import { Command } from 'cmdk';
 import { useCinematicEngine, MissionPhase } from '@/lib/memory/cinematicEngine';
 import { useMissionMemory } from '@/lib/memory/missionMemory';
 import { useScenarioManager } from '@/lib/memory/scenarioManager';
+import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
 import { Terminal, Clock, Activity, Cpu, X, FastForward, Navigation } from 'lucide-react';
 
 export default function CommandPalette() {
@@ -12,6 +13,7 @@ export default function CommandPalette() {
   const { jumpToPhase } = useCinematicEngine();
   const { recordDecision, decisionHistory } = useMissionMemory();
   const { activeScenarioId, scenarios } = useScenarioManager();
+  const { triggerSolarFlare, resolveSolarFlare, spaceWeather } = useTelemetryStore();
 
   // Toggle the menu when Cmd+K or Ctrl+K is pressed
   useEffect(() => {
@@ -122,6 +124,28 @@ export default function CommandPalette() {
               >
                 <Cpu size={14} className="mr-3" /> Trigger AI Diagnostic Sweep
               </Command.Item>
+              
+              {!spaceWeather.active ? (
+                <Command.Item 
+                  onSelect={() => {
+                    triggerSolarFlare();
+                    setOpen(false);
+                  }}
+                  className="flex items-center px-2 py-3 rounded hover:bg-orange-500/20 text-slate-300 hover:text-orange-400 cursor-pointer font-mono text-sm"
+                >
+                  <Activity size={14} className="mr-3 text-orange-500" /> Simulate Class-X Solar Flare
+                </Command.Item>
+              ) : (
+                <Command.Item 
+                  onSelect={() => {
+                    resolveSolarFlare();
+                    setOpen(false);
+                  }}
+                  className="flex items-center px-2 py-3 rounded hover:bg-green-500/20 text-slate-300 hover:text-green-400 cursor-pointer font-mono text-sm"
+                >
+                  <Activity size={14} className="mr-3 text-green-500" /> Resolve Solar Flare Event
+                </Command.Item>
+              )}
             </Command.Group>
             
           </Command.List>

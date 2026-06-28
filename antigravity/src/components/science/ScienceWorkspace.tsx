@@ -7,6 +7,7 @@ import { Microscope, Command } from 'lucide-react';
 import ScientificDigitalTwin from '@/components/visualization/ScientificDigitalTwin';
 import SpectroscopyPanel from '@/components/science/SpectroscopyPanel';
 import CommandPalette from '@/components/operations/CommandPalette';
+import GlitchOverlay from '@/components/effects/GlitchOverlay';
 import { useTelemetryAudio } from '@/lib/audio/useTelemetryAudio';
 
 const ResizeHandle = () => (
@@ -20,6 +21,7 @@ export default function ScienceWorkspace() {
 
   return (
     <div className="h-screen w-full bg-[#000510] flex flex-col overflow-hidden text-cyan-500">
+      <GlitchOverlay />
       
       {/* Top Navbar */}
       <header className="h-12 border-b border-cyan-900/50 bg-[#000814] flex items-center justify-between px-4 shrink-0 shadow-[0_0_20px_rgba(0,255,255,0.05)]">

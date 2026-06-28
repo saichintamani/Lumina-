@@ -19,10 +19,22 @@ function CinematicCameraController() {
   const cameraRef = useRef<any>(null);
   const setCameraPosition = useTelemetryStore(state => state.setCameraPosition);
   const roverPosition = useTelemetryStore(state => state.roverPosition);
+  const spaceWeather = useTelemetryStore(state => state.spaceWeather);
 
   useFrame(() => {
     if (cameraRef.current) {
       setCameraPosition(cameraRef.current.object.position.toArray());
+
+      const camera = cameraRef.current.object;
+      const controls = cameraRef.current;
+
+      // Space Weather Sensor Jitter
+      if (spaceWeather.active) {
+        const jitterIntensity = 0.005 * (spaceWeather.severity / 5);
+        camera.position.x += (Math.random() - 0.5) * jitterIntensity;
+        camera.position.y += (Math.random() - 0.5) * jitterIntensity;
+        camera.position.z += (Math.random() - 0.5) * jitterIntensity;
+      }
 
       // Third-Person Follow Camera logic for MANUAL_OVERRIDE
       if (currentPhase === 'MANUAL_OVERRIDE') {

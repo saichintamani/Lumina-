@@ -117,6 +117,27 @@ function HolographicMoon() {
   );
 }
 
+import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
+
+function ScientificCameraController() {
+  const cameraRef = useRef<any>(null);
+  const spaceWeather = useTelemetryStore(state => state.spaceWeather);
+
+  useFrame(() => {
+    if (cameraRef.current && spaceWeather.active) {
+      const camera = cameraRef.current.object;
+      const jitterIntensity = 0.005 * (spaceWeather.severity / 5);
+      camera.position.x += (Math.random() - 0.5) * jitterIntensity;
+      camera.position.y += (Math.random() - 0.5) * jitterIntensity;
+      camera.position.z += (Math.random() - 0.5) * jitterIntensity;
+    }
+  });
+
+  return (
+    <OrbitControls ref={cameraRef} enableZoom={true} enablePan={true} autoRotate={false} maxDistance={10} minDistance={2} />
+  );
+}
+
 export default function ScientificDigitalTwin() {
   return (
     <div className="w-full h-full bg-[#000510] relative">
@@ -130,7 +151,7 @@ export default function ScientificDigitalTwin() {
           <HolographicMoon />
         </React.Suspense>
         
-        <OrbitControls enableZoom={true} enablePan={true} autoRotate={false} maxDistance={10} minDistance={2} />
+        <ScientificCameraController />
       </Canvas>
       
       {/* HUD Grid Overlay */}

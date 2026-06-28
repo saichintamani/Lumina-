@@ -8,6 +8,11 @@ export interface TelemetryState {
   // Rover Position (used for Manual Override Third-Person Camera)
   roverPosition: [number, number, number];
   setRoverPosition: (pos: [number, number, number]) => void;
+
+  // Space Weather
+  spaceWeather: { active: boolean; severity: number };
+  triggerSolarFlare: () => void;
+  resolveSolarFlare: () => void;
 }
 
 export const useTelemetryStore = create<TelemetryState>((set) => ({
@@ -15,4 +20,7 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
   setCameraPosition: (pos) => set({ cameraPosition: pos }),
   roverPosition: [0, -1.48, 0.2],
   setRoverPosition: (pos) => set({ roverPosition: pos }),
+  spaceWeather: { active: false, severity: 0 },
+  triggerSolarFlare: () => set({ spaceWeather: { active: true, severity: Math.random() * 5 + 5 } }),
+  resolveSolarFlare: () => set({ spaceWeather: { active: false, severity: 0 } }),
 }));

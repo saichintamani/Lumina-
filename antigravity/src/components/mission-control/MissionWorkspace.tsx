@@ -15,6 +15,7 @@ import MiniMapHUD from '@/components/mission-control/MiniMapHUD';
 import { useTelemetryAudio } from '@/lib/audio/useTelemetryAudio';
 import { useAudioSettingsStore } from '@/lib/audio/useAudioSettingsStore';
 import { Volume2, VolumeX } from 'lucide-react';
+import GlitchOverlay from '@/components/effects/GlitchOverlay';
 
 // Custom Resize Handle
 const ResizeHandle = () => (
@@ -45,6 +46,7 @@ export default function MissionWorkspace() {
 
   return (
     <div className="h-screen w-full bg-[#020617] flex flex-col overflow-hidden">
+      <GlitchOverlay />
       
       {/* Top Navbar */}
       <header className="h-12 border-b border-slate-800 bg-[#060b19] flex items-center justify-between px-4 shrink-0">

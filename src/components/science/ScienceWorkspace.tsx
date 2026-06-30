@@ -5,7 +5,6 @@ import { Panel, Group, Separator } from 'react-resizable-panels';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Microscope, Command } from 'lucide-react';
-import AIExplanationPane from '@/components/intelligence/AIExplanationPane';
 import { ErrorBoundary } from '@/components/layout/ErrorBoundary';
 import SpectroscopyPanel from '@/components/science/SpectroscopyPanel';
 import CommandPalette from '@/components/operations/CommandPalette';

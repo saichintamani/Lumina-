@@ -28,11 +28,10 @@ export function ComputerVisionHUD() {
   const { cameraMode, missionFailed } = useTelemetryStore();
   const [boxes, setBoxes] = useState<BoundingBox[]>([]);
 
-  // Only render if in First-Person mode and not failed
-  if (cameraMode !== 'FIRST_PERSON' || missionFailed) return null;
-
   // Simulate an active ML model jumping around finding hazards
   useEffect(() => {
+    if (cameraMode !== 'FIRST_PERSON' || missionFailed) return;
+    
     const interval = setInterval(() => {
       // Randomly decide how many boxes to show (1 to 3)
       const numBoxes = Math.floor(Math.random() * 3) + 1;
@@ -56,7 +55,10 @@ export function ComputerVisionHUD() {
     }, 1500); // New detections every 1.5 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [cameraMode, missionFailed]);
+
+  // Only render if in First-Person mode and not failed
+  if (cameraMode !== 'FIRST_PERSON' || missionFailed) return null;
 
   return (
     <div className="absolute inset-0 pointer-events-none z-40 overflow-hidden">

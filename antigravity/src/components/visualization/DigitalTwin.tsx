@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars, Sphere, Html, Line, Stats, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
@@ -12,7 +12,6 @@ import { useRoverControls } from '@/lib/controls/useRoverControls';
 import LunarDustEngine from './LunarDustEngine';
 import RoverSwarm from './RoverSwarm';
 
-// ----------------------------------------------------
 // Cinematic Camera Controller
 // ----------------------------------------------------
 function CinematicCameraController() {
@@ -549,6 +548,33 @@ function DynamicSun() {
 // ----------------------------------------------------
 export default function DigitalTwin() {
   const { showPerformanceStats } = useVisualLayers();
+  const [matches, setMatches] = useState<any[]>([]);
+
+  // Load matches.json once on mount
+  useEffect(() => {
+    fetch('/data/processed/matches.json')
+      .then((r) => r.json())
+      .then(setMatches)
+      .catch((e) => console.error('Failed to load matches:', e));
+  }, []);
+
+  // After matches load, add tie‑lines to the scene
+  useEffect(() => {
+    if (!matches.length) return;
+    const scene = new THREE.Scene(); // temporary scene for line objects
+    matches.forEach((m) => {
+      const material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+      m.pts_a.forEach((pA: [number, number], i: number) => {
+        const pB = m.pts_b[i];
+        const geometry = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(pA[0], pA[1], 0),
+          new THREE.Vector3(pB[0], pB[1], 0)
+        ]);
+        const line = new THREE.Line(geometry, material);
+        scene.add(line);
+      });
+    });
+  }, [matches]);
 
   return (
     <div className="w-full h-full bg-[#020617] relative">

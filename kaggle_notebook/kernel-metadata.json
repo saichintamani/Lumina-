@@ -1,0 +1,14 @@
+{
+  "id": "saichintamaniai/isro-lunar-surface-loftr-feature-matching",
+  "title": "ISRO Lunar Surface LoFTR Feature Matching",
+  "code_file": "isro-lunar-loftr-matching.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": false,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "keywords": ["isro", "lunar", "loftr", "feature-matching", "chandrayaan", "deep-learning", "computer-vision"],
+  "dataset_sources": ["saichintamaniai/isro-lunar-surface-matching"],
+  "competition_sources": [],
+  "kernel_sources": []
+}

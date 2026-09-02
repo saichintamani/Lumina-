@@ -39,8 +39,8 @@ export default function Home() {
           className="h-screen w-full flex flex-col items-center justify-center pointer-events-none"
         >
           <div className="text-center">
-            <h1 className="text-7xl font-bold font-mono tracking-tighter mb-4 text-white drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-              ANTIGRAVITY <span className="text-green-500">v3</span>
+            <h1 className="text-8xl font-black font-mono tracking-tighter mb-4 text-white drop-shadow-[0_0_25px_rgba(59,130,246,0.8)] animate-pulse">
+              LUMINA <span className="text-green-500 drop-shadow-[0_0_15px_rgba(34,197,94,0.8)]">v3</span>
             </h1>
             <p className="text-xl text-slate-300 font-sans tracking-widest uppercase">
               Lunar Mission Intelligence Platform

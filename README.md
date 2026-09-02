@@ -1,40 +1,60 @@
-# Bharatiya Antariksh Hackathon 2026: Subsurface Ice Detection & Traverse Planning
+# Smart India Hackathon: Multi-Modal Image Correspondence
 
-**Official Problem Statement Alignment:** Detection and Characterization of Subsurface Ice in Lunar South Polar Regions Using Chandrayaan-2 Radar and Imagery Data for Landing Site and Rover Traverse Planning.
+*Lumina represented by LumaInit*
+**Official Problem Statement Alignment:** Multi-modal, Sun angle and scale invariant image correspondence using Chandrayaan-2 optical images (OHRC, TMC and IIRS).
+**PS Number:** SIH26166
 
 ## Overview
-The discovery and characterization of water-ice in the lunar South Polar Region is a high-priority scientific and exploration objective. Observations from Chandrayaan-2 have opened new avenues to probe surface/subsurface using high-resolution optical and radar datasets.
+The goal of this project is to create an advanced computer vision pipeline and an interactive 3D Mission Control Dashboard capable of co-registering vastly different optical products from Chandrayaan-2.
 
-This project specifically targets the **Faustini Permanently Shadowed Region (PSR)**, with a deep focus on a **"Doubly Shadowed Crater with Lobate-Rim"**. These doubly shadowed regions (DSRs) provide access to some of the coldest environments on the Moon that are ideal candidates for long-term volatile preservation.
+The challenge lies in matching images across extreme scale differences (OHRC at 0.25m/pixel vs TMC at 5m/pixel vs IIRS at 80m/pixel), across different spectral bands (Multi-modal), and across different lighting conditions (Sun angle invariance).
 
 ## Key Objectives Achieved
 
-### 1. Subsurface Ice Detection
-We utilize Chandrayaan-2 L-band and S-band Dual-Frequency Synthetic Aperture Radar (DFSAR) parameters to detect subsurface ice unambiguously. 
-- **Methodology:** We leverage the Circular Polarization Ratio (CPR) and Degree of Polarization (DOP) criterion. High CPR and low DOP values within the Faustini PSR indicate a high likelihood of water-ice deposits rather than merely surface roughness.
-- **Machine Learning Integration:** We deployed a Random Forest Classifier trained on these specific DFSAR polarimetric parameters, alongside thermal thresholds, yielding high confidence predictions for subsurface ice beneath the crater floor.
+### 1. Scale-Invariant Feature Matching
+We utilize advanced computer vision algorithms (such as SIFT or deep-learned LoFTR) to extract robust tie-points that survive the 20x scale difference between OHRC and TMC images.
 
-### 2. Optimal Rover Traverse Planning
-Identifying ice is only the first challenge; translating these detections into actionable exploration strategies is the key objective of this hackathon.
-- **A* Pathfinding Algorithm:** We simulated an optimal and safe rover traverse path traversing the lunar terrain to access the doubly shadowed crater.
-- **Constraints Mapped:** The path heavily considers terrain hazards (avoiding slopes > 5°) and solar power constraints (maintaining > 70% illumination during traverse corridors).
+### 2. Sun Angle Normalization via DEM Ray-Tracing
+Shadows on the lunar surface change drastically depending on the sun angle. We use the TMC Digital Elevation Model (DEM) to simulate and normalize lighting conditions, reducing sun-angle variance before attempting feature matching.
 
-## Architecture & Mission Control Dashboard
-We built a highly advanced, browser-based **Mission Control Dashboard** (UI/UX Pro Max) to visualize the data.
+## Architecture & Mission Control Dashboard (Lumina v3)
+We built a highly advanced, browser-based **3D Multi-Modal Fusion Viewer** to visualize the co-registered data.
 
-### Features:
-- **WebGL 3D Interactive Simulation:** A fully coded Three.js simulation of the Faustini region, featuring a live-animated **3D Rover traversing the optimal path** towards the doubly shadowed crater.
-- **Real-Time Telemetry Inference:** Live machine learning probability updates using the Random Forest algorithm based on simulated Chandrayaan-2 DFSAR readings.
-- **Scientific Analysis Report:** Embedded deep-dive charts showing illumination models, CPR-DOP scatter spaces, terrain classification, and ice volume bootstrap estimates.
+### 🌟 Vercel Live Deployment
+**Access the fully functional Digital Twin live here:**
+👉 [https://lumina-zeta-sand.vercel.app](https://lumina-zeta-sand.vercel.app)
+
+### ✨ Features:
+- **WebGL 3D Interactive Simulation:** A fully coded Three.js simulation draping TMC, OHRC, and IIRS data over a 3D DEM mesh of the lunar surface at Faustini Crater.
+- **Interactive Sun & Shadow Physics Simulator:** Real-time raycasting dynamically casts accurate shadows over the 3D terrain, calculating rover temperature and battery drain to simulate survival constraints based on the sun-angle.
+- **AI-Powered Ice Classification & Spectroscopy:** Integrates synthetic DFSAR polarimetry (CPR/DOP) with thermal constraints via Random Forest to predict sub-surface ice probability.
+- **Real-Time Telemetry Interface:** Displays live image registration metrics like Inlier Ratio, Reprojection Error, and robotic swarm operations.
+
+## 🧠 AI Pipeline & Data Sets
+To solve the scale-invariance and multi-modal alignment challenges, we developed a powerful Deep Learning pipeline hosted entirely on Kaggle. 
+
+*   **Kaggle AI Pipeline (Notebook):** [ISRO Lunar Surface LoFTR Feature Matching](https://www.kaggle.com/code/saichintamaniai/isro-lunar-surface-loftr-feature-matching) (Implements PyTorch-based LoFTR for detector-free scale-invariant matching and RF Ice Classification).
+*   **Kaggle Lunar Dataset:** [ISRO Lunar Surface Matching Dataset](https://www.kaggle.com/datasets/saichintamaniai/isro-lunar-surface-matching)
+*   **GitHub Reference:** [saichintamani/Lumina-](https://github.com/saichintamani/Lumina-)
 
 ## How to Run the Dashboard Locally
-1. Ensure you have Python installed.
+1. Ensure you have Node.js installed.
 2. Clone this repository.
-3. Start the local server:
+3. Navigate to the `antigravity` folder:
    ```bash
-   python -m http.server 8000 --directory frontend
+   cd antigravity
+   npm install
+   npm run dev
    ```
-4. Open your browser and navigate to `http://localhost:8000`.
+4. Open your browser and navigate to `http://localhost:3000`.
+
+To run the offline python pipeline and generate architectural figures:
+```bash
+pip install numpy matplotlib
+cd src
+python make_figures.py
+python make_architecture_diagram.py
+```
 
 ---
-*Developed for the Bharatiya Antariksh Hackathon 2026, powered by ISRO & Hack2skill.*
+*Developed for the Smart India Hackathon, powered by ISRO & Hack2skill. Represented by LumaInit.*

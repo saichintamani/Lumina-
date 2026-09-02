@@ -3,12 +3,22 @@
 import React from 'react';
 import { Panel, Group, Separator } from 'react-resizable-panels';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Microscope, Command } from 'lucide-react';
-import ScientificDigitalTwin from '@/components/visualization/ScientificDigitalTwin';
+import { ErrorBoundary } from '@/components/layout/ErrorBoundary';
 import SpectroscopyPanel from '@/components/science/SpectroscopyPanel';
 import CommandPalette from '@/components/operations/CommandPalette';
 import GlitchOverlay from '@/components/effects/GlitchOverlay';
 import { useTelemetryAudio } from '@/lib/audio/useTelemetryAudio';
+
+const ScientificDigitalTwin = dynamic(() => import('@/components/visualization/ScientificDigitalTwin'), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center bg-[#000510]">
+      <div className="animate-pulse text-cyan-500 font-mono text-sm">[ LOADING VOLUMETRIC SCANS... ]</div>
+    </div>
+  )
+});
 
 const ResizeHandle = () => (
   <Separator className="w-1.5 bg-[#001122] hover:bg-cyan-500/50 transition-colors cursor-col-resize flex flex-col justify-center items-center">
@@ -56,14 +66,15 @@ export default function ScienceWorkspace() {
       <div className="flex-1 overflow-hidden">
         <Group orientation="horizontal">
           
-          {/* Left Panel: Volumetric Moon */}
-          <Panel defaultSize={75} minSize={40}>
-            <div className="w-full h-full relative border-r border-cyan-900/30">
+          {/* Lunar Surface Render */}
+          <Panel defaultSize={55} minSize={40} className="relative bg-black rounded-lg overflow-hidden border border-slate-800">
+            <ErrorBoundary>
               <ScientificDigitalTwin />
-              <div className="absolute top-4 left-4 pointer-events-none">
-                <div className="text-xs font-mono text-cyan-400 bg-[#001122]/80 border border-cyan-900/50 px-3 py-1.5 rounded backdrop-blur shadow-[0_0_15px_rgba(0,255,255,0.15)]">
-                  SENSOR_MODE: VOLUMETRIC_XRAY
-                </div>
+            </ErrorBoundary>
+            
+            <div className="absolute top-4 left-4 pointer-events-none">
+              <div className="text-xs font-mono text-cyan-400 bg-[#001122]/80 border border-cyan-900/50 px-3 py-1.5 rounded backdrop-blur shadow-[0_0_15px_rgba(0,255,255,0.15)]">
+                SENSOR_MODE: VOLUMETRIC_XRAY
               </div>
             </div>
           </Panel>

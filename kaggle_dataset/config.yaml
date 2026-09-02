@@ -1,0 +1,8 @@
+data_dir: "./antigravity/data"
+raw_dir: "./antigravity/data/raw"
+processed_dir: "./antigravity/data/processed"
+matches_file: "matches.json"
+
+loftr:
+  pretrained: "outdoor"
+  confidence_thr: 0.7

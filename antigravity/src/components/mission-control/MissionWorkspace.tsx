@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Panel, Group, Separator } from 'react-resizable-panels';
 import CommandPalette from '@/components/operations/CommandPalette';
 import TelemetryDashboard from '@/components/operations/TelemetryDashboard';
-import DigitalTwin from '@/components/visualization/DigitalTwin';
+import dynamic from 'next/dynamic';
+import { ErrorBoundary } from '@/components/layout/ErrorBoundary';
 import ReplayControls from '@/components/mission-control/ReplayControls';
 import ExplanationCard from '@/components/intelligence/ExplanationCard';
 import { useMissionMemory } from '@/lib/memory/missionMemory';
@@ -18,6 +19,16 @@ import { Volume2, VolumeX } from 'lucide-react';
 import GlitchOverlay from '@/components/effects/GlitchOverlay';
 import { ComputerVisionHUD } from '@/components/effects/ComputerVisionHUD';
 import { LatencyHUD } from '@/components/effects/LatencyHUD';
+
+// Dynamically import DigitalTwin for code splitting (heavy WebGL payload)
+const DigitalTwin = dynamic(() => import('../visualization/DigitalTwin'), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center bg-black">
+      <div className="animate-pulse text-cyan-500 font-mono text-sm">[ LOADING 3D TELEMETRY... ]</div>
+    </div>
+  )
+});
 
 // Custom Resize Handle
 const ResizeHandle = () => (
@@ -97,9 +108,11 @@ export default function MissionWorkspace() {
               
               {/* Top: 3D Digital Twin */}
               <Panel defaultSize={80} minSize={50} className="relative bg-black">
-                <DigitalTwin />
-                <ComputerVisionHUD />
-                <LatencyHUD />
+                <ErrorBoundary>
+                  <DigitalTwin />
+                  <ComputerVisionHUD />
+                  <LatencyHUD />
+                </ErrorBoundary>
                 
                 {/* Top Left: Camera Status */}
                 <div className="absolute top-4 left-4 z-10 pointer-events-none">

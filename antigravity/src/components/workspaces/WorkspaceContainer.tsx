@@ -5,6 +5,7 @@ import MissionWorkspace from '@/components/mission-control/MissionWorkspace';
 import ScientificAnalysisWorkspace from '@/components/workspaces/ScientificAnalysisWorkspace';
 import ResearchWorkspace from '@/components/workspaces/ResearchWorkspace';
 import AIOrchestrator from '@/components/intelligence/AIOrchestrator';
+import DemonstrationMode from '@/components/presentation/DemonstrationMode';
 import { LayoutDashboard, Microscope, BookOpen, Settings } from 'lucide-react';
 
 type WorkspaceType = 'MISSION' | 'SCIENCE' | 'RESEARCH';
@@ -14,6 +15,7 @@ export default function WorkspaceContainer() {
 
   return (
     <div className="w-screen h-screen bg-black flex overflow-hidden font-sans">
+      <DemonstrationMode />
       <AIOrchestrator />
       
       {/* Sidebar Navigation */}

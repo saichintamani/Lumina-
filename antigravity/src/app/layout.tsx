@@ -15,7 +15,7 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "Antigravity v3 | Lunar Mission Intelligence",
+  title: "Lumina v3 | Lunar Mission Intelligence",
   description: "Phase 1: Mission Control Foundation",
 };
 

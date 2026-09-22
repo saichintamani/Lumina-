@@ -26,9 +26,15 @@
 
 <br/>
 
-[![Deploy](https://img.shields.io/badge/🌐_LIVE_DEMO-Visit_Platform-00C7FF?style=for-the-badge&logoColor=white)](https://antigravity-faxkdjo57-sai-chintamanis-projects.vercel.app/)
-[![Mission Control](https://img.shields.io/badge/🛸_MISSION_CONTROL-Enter_Dashboard-6366F1?style=for-the-badge)](https://antigravity-faxkdjo57-sai-chintamanis-projects.vercel.app/mission-control)
-[![ISRO](https://img.shields.io/badge/🇮🇳_ISRO-Chandrayaan_Research-FF6B35?style=for-the-badge)](https://www.isro.gov.in/)
+[![SIH Qualified](https://img.shields.io/badge/🏆_SIH_2026-QUALIFIED-FFD700?style=for-the-badge&labelColor=1a1a2e)](https://www.sih.gov.in/)
+[![3rd Rank](https://img.shields.io/badge/🥉_College_Rank-3rd_Place-CD7F32?style=for-the-badge&labelColor=1a1a2e)]()
+[![BAH 2026](https://img.shields.io/badge/🚀_BAH_2026-ISRO_×_Hack2skill-FF6B35?style=for-the-badge&labelColor=1a1a2e)](https://hack2skill.com/)
+
+<br/>
+
+[![Deploy](https://img.shields.io/badge/🌐_LIVE_DEMO-Visit_Platform-00C7FF?style=for-the-badge&logoColor=white)](https://lumina-zeta-sand.vercel.app)
+[![Mission Control](https://img.shields.io/badge/🛸_MISSION_CONTROL-Enter_Dashboard-6366F1?style=for-the-badge)](https://lumina-zeta-sand.vercel.app/mission-control)
+[![ISRO](https://img.shields.io/badge/🇮🇳_ISRO-Chandrayaan_2_Research-FF6B35?style=for-the-badge)](https://www.isro.gov.in/)
 
 <br/>
 
@@ -36,6 +42,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/saichintamani/Lumina-?color=6366F1&style=flat-square)
 ![GitHub stars](https://img.shields.io/github/stars/saichintamani/Lumina-?color=FFD700&style=flat-square)
 ![GitHub forks](https://img.shields.io/github/forks/saichintamani/Lumina-?color=00C7FF&style=flat-square)
+![GitHub license](https://img.shields.io/github/license/saichintamani/Lumina-?color=00FF88&style=flat-square)
 
 </div>
 
@@ -48,6 +55,10 @@
 **Lumina** is a browser-native, production-ready **Lunar Mission Digital Twin** — a real-time simulation platform that mirrors the exact conditions at **Faustini Crater**, Lunar South Pole. It combines autonomous multi-agent robotics, an explainable AI orchestrator, volumetric science instruments, and a cinematic narrative UX into a single, unified Mission Control environment.
 
 Built on findings from **Chandrayaan-2's DFSAR radar** and informed by ISRO's South Polar exploration objectives, Lumina bridges the gap between raw planetary science and operational decision-making.
+
+> **📋 SIH Problem Statement (SIH26166):** *"Multi-modal, Sun angle and scale invariant image correspondence using Chandrayaan-2 optical images (OHRC, TMC and IIRS)."*
+>
+> Lumina directly solves this by combining LoFTR deep feature matching, DEM-based sun-angle normalization, and a production-grade 3D visualization dashboard — and was **selected for the SIH Intern Hackathon**, securing **3rd rank** across all college teams.
 
 ---
 
@@ -343,16 +354,59 @@ npm run dev
 | Data Source | Instrument | Parameter |
 |-------------|-----------|-----------|
 | Chandrayaan-2 | DFSAR (Dual-frequency SAR) | Sub-surface ice detection |
+| Chandrayaan-2 | OHRC (0.25m/px) | High-res feature matching |
+| Chandrayaan-2 | TMC (5m/px, stereo) | DEM + sun-angle normalization |
+| Chandrayaan-2 | IIRS (80m/px, 256 bands) | Hyperspectral imaging |
 | Chandrayaan-2 | CLASS (X-ray spectrometer) | Elemental composition |
 | LOLA / LRO | Laser Altimeter | Crater elevation model |
 | ISRO PRADAN | Polar Region Analysis | Thermal excursion mapping |
-| Faustini Crater | -85.46°S, 30.12°E | Primary mission target |
+| Faustini Crater | −85.46°S, 30.12°E | Primary mission target |
 
 ---
 
-## 🏆 Recognition
+## 📊 Data & AI Pipeline — Kaggle
 
-> Built as part of the **ISRO Space Application Research Program** — focusing on autonomous lunar exploration at the South Polar Region, inspired by findings from Chandrayaan-2 and the scientific groundwork laid for future crewed Moon missions.
+The deep learning pipeline for multi-modal feature matching and ice classification is hosted on Kaggle:
+
+<div align="center">
+
+[![Kaggle Notebook](https://img.shields.io/badge/📓_Kaggle_Notebook-ISRO_Lunar_LoFTR_Matching-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/code/saichintamaniai/isro-lunar-surface-loftr-feature-matching)
+
+[![Kaggle Dataset](https://img.shields.io/badge/📦_Kaggle_Dataset-ISRO_Lunar_Surface_Matching-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/datasets/saichintamaniai/isro-lunar-surface-matching)
+
+</div>
+
+| Resource | Description | Link |
+|:---|:---|:---:|
+| 📓 **AI Pipeline** | PyTorch LoFTR + RF Ice Classification | [Open →](https://www.kaggle.com/code/saichintamaniai/isro-lunar-surface-loftr-feature-matching) |
+| 📦 **Lunar Dataset** | Multi-modal Chandrayaan-2 imagery | [Open →](https://www.kaggle.com/datasets/saichintamaniai/isro-lunar-surface-matching) |
+| 🌐 **Live Platform** | 3D Digital Twin Mission Control | [Open →](https://lumina-zeta-sand.vercel.app) |
+| 🐙 **Source Code** | Full repository | [Open →](https://github.com/saichintamani/Lumina-) |
+
+---
+
+## 🏆 Recognition & Achievements
+
+<div align="center">
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║   🏆  SMART INDIA HACKATHON (BAH 2026)  —  QUALIFIED        ║
+║   🥉  SECURED 3RD RANK ACROSS THE COLLEGE                   ║
+║                                                              ║
+║   Problem Statement : SIH26166                               ║
+║   Organization      : ISRO × Hack2skill                     ║
+║   Team              : LumaInit                               ║
+║   Challenge         : Multi-Modal Lunar Image                ║
+║                       Correspondence                         ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+</div>
+
+> Built for the **Bharatiya Antariksh Hackathon 2026** — qualified for the **SIH Intern Hackathon** round and secured **3rd place** across all participating college teams. This project advances autonomous lunar exploration at the South Polar Region, inspired by findings from **Chandrayaan-2** and the scientific groundwork laid for future crewed Moon missions.
 
 ---
 
@@ -360,12 +414,16 @@ npm run dev
 
 ### Built with ❤️ for the Moon
 
-**[🌐 Live Platform](https://antigravity-faxkdjo57-sai-chintamanis-projects.vercel.app/) · [🛸 Mission Control](https://antigravity-faxkdjo57-sai-chintamanis-projects.vercel.app/mission-control) · [🐙 GitHub](https://github.com/saichintamani/Lumina-)**
+**[🌐 Live Platform](https://lumina-zeta-sand.vercel.app) · [🛸 Mission Control](https://lumina-zeta-sand.vercel.app/mission-control) · [📓 Kaggle Notebook](https://www.kaggle.com/code/saichintamaniai/isro-lunar-surface-loftr-feature-matching) · [🐙 GitHub](https://github.com/saichintamani/Lumina-)**
 
 <br/>
 
 *"Ad astra per aspera — through hardships to the stars."*
 
+<br/>
+
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=saichintamani.Lumina-)
+
+*Developed for the Smart India Hackathon 2026, powered by ISRO & Hack2skill. Represented by Team LumaInit.*
 
 </div>

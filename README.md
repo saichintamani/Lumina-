@@ -30,6 +30,7 @@
 <br/>
 
 [![Live Demo](https://img.shields.io/badge/🌐_LIVE_DEMO-Visit_Platform-00C7FF?style=for-the-badge&logoColor=white)](https://lumina-zeta-sand.vercel.app)
+[![YouTube Video](https://img.shields.io/badge/▶️_YOUTUBE_DEMO-Watch_Video-FF0000?style=for-the-badge&logoColor=white)](https://youtu.be/zEwT87t7z_E)
 [![Mission Control](https://img.shields.io/badge/🛸_MISSION_CONTROL-Enter_Dashboard-6366F1?style=for-the-badge)](https://lumina-zeta-sand.vercel.app/mission-control)
 [![ISRO](https://img.shields.io/badge/🇮🇳_ISRO-Chandrayaan_2_Research-FF6B35?style=for-the-badge)](https://www.isro.gov.in/)
 

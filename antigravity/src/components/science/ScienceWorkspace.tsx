@@ -12,6 +12,9 @@ import GlitchOverlay from '@/components/effects/GlitchOverlay';
 import { useTelemetryAudio } from '@/lib/audio/useTelemetryAudio';
 import ScaleMagnifier from '@/components/science/ScaleMagnifier';
 import IceProbabilityPanel from '@/components/science/IceProbabilityPanel';
+import DeepCoreDrill from '@/components/science/DeepCoreDrill';
+import MatchingSandbox from '@/components/science/MatchingSandbox';
+import ShadowMetricsPanel from '@/components/science/ShadowMetricsPanel';
 
 const ScientificDigitalTwin = dynamic(() => import('@/components/visualization/ScientificDigitalTwin'), { 
   ssr: false,
@@ -88,6 +91,10 @@ export default function ScienceWorkspace() {
             <h3 className="text-xs font-mono text-cyan-600 tracking-widest border-b border-cyan-900/50 pb-2">TELEMETRY STREAMS</h3>
             
             <SpectroscopyPanel />
+            
+            <div className="mt-4">
+              <DeepCoreDrill />
+            </div>
 
             <div className="bg-[#001122] border border-cyan-900/30 p-4 rounded-lg mt-4">
               <h4 className="text-xs font-mono text-magenta-400 text-pink-400 mb-2">ANOMALY DETECTED</h4>
@@ -98,6 +105,14 @@ export default function ScienceWorkspace() {
             </div>
 
             <IceProbabilityPanel />
+
+            <div className="mt-4">
+              <MatchingSandbox />
+            </div>
+
+            <div className="mt-4">
+              <ShadowMetricsPanel />
+            </div>
           </Panel>
 
         </Group>

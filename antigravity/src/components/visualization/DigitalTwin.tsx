@@ -11,6 +11,7 @@ import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
 import { useRoverControls } from '@/lib/controls/useRoverControls';
 import LunarDustEngine from './LunarDustEngine';
 import RoverSwarm from './RoverSwarm';
+import { Goggles } from 'lucide-react';
 
 // Cinematic Camera Controller
 // ----------------------------------------------------
@@ -548,6 +549,7 @@ function DynamicSun() {
 // ----------------------------------------------------
 export default function DigitalTwin() {
   const { showPerformanceStats } = useVisualLayers();
+  const { cameraMode, toggleCameraMode } = useTelemetryStore();
   const [matches, setMatches] = useState<any[]>([]);
 
   // Load matches.json once on mount
@@ -611,6 +613,21 @@ export default function DigitalTwin() {
       <div className="absolute inset-0 pointer-events-none" style={{
         boxShadow: 'inset 0 0 150px rgba(0,0,0,0.9)'
       }} />
+
+      {/* XR Mode Toggle */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
+        <button 
+          onClick={toggleCameraMode}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full font-mono text-[10px] font-bold border backdrop-blur transition-all shadow-[0_0_20px_rgba(0,0,0,0.5)] ${
+            cameraMode === 'FIRST_PERSON' 
+              ? 'bg-pink-600/30 text-pink-400 border-pink-500/50 hover:bg-pink-600/50' 
+              : 'bg-black/50 text-slate-300 border-slate-700 hover:bg-black/80 hover:text-white'
+          }`}
+        >
+          <Goggles size={14} className={cameraMode === 'FIRST_PERSON' ? 'animate-pulse' : ''} />
+          {cameraMode === 'FIRST_PERSON' ? 'EXIT VR MODE' : 'ENTER XR / FIRST PERSON'}
+        </button>
+      </div>
     </div>
   );
 }

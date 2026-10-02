@@ -22,6 +22,8 @@ import GlitchOverlay from '@/components/effects/GlitchOverlay';
 import { ComputerVisionHUD } from '@/components/effects/ComputerVisionHUD';
 import { LatencyHUD } from '@/components/effects/LatencyHUD';
 import ISRODataTerminal from '@/components/operations/ISRODataTerminal';
+import LuminaOSAssistant from '@/components/intelligence/LuminaOSAssistant';
+import LatencyMiniGame from '@/components/mission-control/LatencyMiniGame';
 
 // Dynamically import DigitalTwin for code splitting (heavy WebGL payload)
 const DigitalTwin = dynamic(() => import('../visualization/DigitalTwin'), { 
@@ -154,10 +156,16 @@ export default function MissionWorkspace() {
               
               {/* Top Right: Telemetry Dashboard */}
               <Panel defaultSize={40} className="overflow-y-auto p-4 border-b border-slate-800">
+                <div className="mb-4">
+                  <LuminaOSAssistant />
+                </div>
                 <h3 className="text-xs font-mono text-slate-500 mb-3">LIVE TELEMETRY</h3>
                 <TelemetryDashboard />
                 <div className="mt-4">
                   <PathPlannerPanel />
+                </div>
+                <div className="mt-4">
+                  <LatencyMiniGame />
                 </div>
               </Panel>
 

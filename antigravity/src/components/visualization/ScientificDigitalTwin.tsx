@@ -92,7 +92,7 @@ const MultiModalMaterial = shaderMaterial(
 
 extend({ MultiModalMaterial });
 
-function MultiModalMoon({ sunAngle, mode }: { sunAngle: number, mode: number }) {
+function MultiModalMoon({ sunAngle, mode, showMatches }: { sunAngle: number, mode: number, showMatches: boolean }) {
   const moonGroupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<any>(null);
   const texture = useTexture('/moon_color.jpg');
@@ -132,6 +132,10 @@ function MultiModalMoon({ sunAngle, mode }: { sunAngle: number, mode: number }) 
           uTexture={texture}
         />
       </Sphere>
+      
+      {showMatches && matches.length > 0 && (
+        <MatchesLayer matches={matches} radius={1.51} />
+      )}
     </group>
   );
 }
@@ -146,6 +150,7 @@ function ScientificCameraController() {
 export default function ScientificDigitalTwin() {
   const [sunAngle, setSunAngle] = useState(0.5); // Range 0 to PI
   const [mode, setMode] = useState(0); // 0: TMC, 1: OHRC, 2: IIRS
+  const [showMatches, setShowMatches] = useState(true);
 
   // Automatically cycle modes for demonstration if not interacted
   useEffect(() => {
@@ -158,18 +163,26 @@ export default function ScientificDigitalTwin() {
   return (
     <div className="w-full h-full bg-[#000510] relative flex flex-col">
       {/* Controls Overlay */}
-      <div className="absolute top-4 left-4 z-10 bg-black/60 p-4 rounded border border-slate-700 flex flex-col gap-4 text-white">
+      <div className="absolute top-4 left-4 z-10 bg-black/80 p-5 rounded border border-cyan-800 flex flex-col gap-5 text-white shadow-[0_0_20px_rgba(0,255,255,0.2)] max-w-sm backdrop-blur-md">
+        
         <div>
-          <label className="block text-xs font-mono text-slate-400 mb-1">DATA FUSION LAYER</label>
+          <h2 className="text-sm font-bold text-cyan-400 mb-1 tracking-wider border-b border-cyan-900 pb-1">SIH26166: ILLUMINATION INVARIANCE</h2>
+          <p className="text-[10px] text-slate-300 mb-3 leading-relaxed">
+            Demonstrating scale & sun-angle invariant correspondence using LoFTR deep learning. Watch feature matching persist as shadows dynamically change.
+          </p>
+          <label className="block text-xs font-mono text-cyan-300 mb-1">DATA FUSION LAYER (SCALE)</label>
           <div className="flex gap-2">
-            <button onClick={() => setMode(0)} className={`px-2 py-1 text-xs border ${mode === 0 ? 'bg-slate-700 border-white' : 'border-slate-700'}`}>TMC (5m/px)</button>
-            <button onClick={() => setMode(1)} className={`px-2 py-1 text-xs border ${mode === 1 ? 'bg-slate-700 border-white' : 'border-slate-700'}`}>OHRC (0.25m/px)</button>
-            <button onClick={() => setMode(2)} className={`px-2 py-1 text-xs border ${mode === 2 ? 'bg-slate-700 border-white' : 'border-slate-700'}`}>IIRS (Hyper)</button>
+            <button onClick={() => setMode(0)} className={`px-2 py-1 text-xs border ${mode === 0 ? 'bg-cyan-900 border-cyan-400 text-white' : 'border-slate-700 text-slate-400'}`}>TMC (5m)</button>
+            <button onClick={() => setMode(1)} className={`px-2 py-1 text-xs border ${mode === 1 ? 'bg-cyan-900 border-cyan-400 text-white' : 'border-slate-700 text-slate-400'}`}>OHRC (0.25m)</button>
+            <button onClick={() => setMode(2)} className={`px-2 py-1 text-xs border ${mode === 2 ? 'bg-cyan-900 border-cyan-400 text-white' : 'border-slate-700 text-slate-400'}`}>IIRS</button>
           </div>
         </div>
         
         <div>
-          <label className="block text-xs font-mono text-slate-400 mb-1">SUN ANGLE (SIMULATED)</label>
+          <div className="flex justify-between items-center mb-1">
+            <label className="text-xs font-mono text-cyan-300">DYNAMIC SUN ANGLE</label>
+            <span className="text-[10px] font-mono text-slate-400">{(sunAngle * 57.29).toFixed(1)}°</span>
+          </div>
           <input 
             type="range" 
             min="0.1" 
@@ -177,8 +190,21 @@ export default function ScientificDigitalTwin() {
             step="0.1"
             value={sunAngle}
             onChange={(e) => setSunAngle(parseFloat(e.target.value))}
-            className="w-full"
+            className="w-full accent-cyan-500"
           />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input 
+            type="checkbox" 
+            id="matches-toggle"
+            checked={showMatches}
+            onChange={(e) => setShowMatches(e.target.checked)}
+            className="accent-cyan-500"
+          />
+          <label htmlFor="matches-toggle" className="text-xs font-mono text-cyan-300 cursor-pointer">
+            OVERLAY DL CORRESPONDENCE POINTS
+          </label>
         </div>
       </div>
 
@@ -187,7 +213,7 @@ export default function ScientificDigitalTwin() {
           <color attach="background" args={['#000510']} />
           <Stars radius={50} depth={20} count={1000} factor={2} saturation={1} fade speed={0.5} />
           <React.Suspense fallback={null}>
-            <MultiModalMoon sunAngle={sunAngle} mode={mode} />
+            <MultiModalMoon sunAngle={sunAngle} mode={mode} showMatches={showMatches} />
           </React.Suspense>
           <ScientificCameraController />
         </Canvas>
@@ -203,26 +229,36 @@ export default function ScientificDigitalTwin() {
   );
 }
 function MatchesLayer({ matches, radius }: { matches: any[]; radius: number }) {
-  // Convert UV coordinates to 3D positions on sphere (assuming 256x256 texture)
-  const points = matches.map((m) => {
-    const u = m.img1_x / 256;
-    const v = m.img1_y / 256;
-    const theta = v * Math.PI;
-    const phi = u * 2 * Math.PI;
-    const x = radius * Math.sin(theta) * Math.cos(phi);
-    const y = radius * Math.cos(theta);
-    const z = radius * Math.sin(theta) * Math.sin(phi);
-    return [x, y, z] as [number, number, number];
-  });
-
+  // Convert UV coordinates from matches (using 256 as proxy scale) to 3D positions
   return (
     <group>
-      {points.map((pos, i) => (
-        <mesh key={i} position={pos as any}>
-          <sphereGeometry args={[0.02, 8, 8]} />
-          <meshBasicMaterial color="lime" />
-        </mesh>
-      ))}
+      {matches.slice(0, 150).map((m, i) => {
+        // Map x,y to spherical coordinates
+        const u = (m.img1_x % 256) / 256;
+        const v = (m.img1_y % 256) / 256;
+        
+        // Slightly cluster them on the front face for visibility
+        const theta = (v * Math.PI) / 2 + Math.PI / 4; 
+        const phi = (u * Math.PI) / 2 - Math.PI / 4; 
+        
+        const x = radius * Math.sin(theta) * Math.cos(phi);
+        const y = radius * Math.cos(theta);
+        const z = radius * Math.sin(theta) * Math.sin(phi);
+        
+        return (
+          <group key={i} position={[x, y, z]}>
+            <mesh>
+              <sphereGeometry args={[0.015, 8, 8]} />
+              <meshBasicMaterial color="#00ffaa" />
+            </mesh>
+            {/* Draw a subtle line shooting out to represent correspondence */}
+            <mesh position={[0, 0, 0.05]}>
+               <cylinderGeometry args={[0.002, 0.002, 0.1]} />
+               <meshBasicMaterial color="#00ffaa" transparent opacity={0.5} />
+            </mesh>
+          </group>
+        );
+      })}
     </group>
   );
 }

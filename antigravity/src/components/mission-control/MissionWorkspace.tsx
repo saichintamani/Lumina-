@@ -8,17 +8,20 @@ import dynamic from 'next/dynamic';
 import { ErrorBoundary } from '@/components/layout/ErrorBoundary';
 import ReplayControls from '@/components/mission-control/ReplayControls';
 import ExplanationCard from '@/components/intelligence/ExplanationCard';
+import LunarCycleTimeline from '@/components/mission-control/LunarCycleTimeline';
 import { useMissionMemory } from '@/lib/memory/missionMemory';
 import { Command } from 'lucide-react';
 import Link from 'next/link';
 import SubsystemHUD from '@/components/mission-control/SubsystemHUD';
 import MiniMapHUD from '@/components/mission-control/MiniMapHUD';
+import PathPlannerPanel from '@/components/mission-control/PathPlannerPanel';
 import { useTelemetryAudio } from '@/lib/audio/useTelemetryAudio';
 import { useAudioSettingsStore } from '@/lib/audio/useAudioSettingsStore';
 import { Volume2, VolumeX } from 'lucide-react';
 import GlitchOverlay from '@/components/effects/GlitchOverlay';
 import { ComputerVisionHUD } from '@/components/effects/ComputerVisionHUD';
 import { LatencyHUD } from '@/components/effects/LatencyHUD';
+import ISRODataTerminal from '@/components/operations/ISRODataTerminal';
 
 // Dynamically import DigitalTwin for code splitting (heavy WebGL payload)
 const DigitalTwin = dynamic(() => import('../visualization/DigitalTwin'), { 
@@ -132,9 +135,12 @@ export default function MissionWorkspace() {
 
               <HorizontalResizeHandle />
 
-              {/* Bottom: Replay Controls & Timeline */}
+              {/* Bottom: Replay Controls & 14-Day Lunar Cycle */}
               <Panel defaultSize={20} minSize={15} className="bg-[#060b19] p-4 overflow-y-auto">
-                <ReplayControls />
+                <LunarCycleTimeline />
+                <div className="mt-3">
+                  <ReplayControls />
+                </div>
               </Panel>
 
             </Group>
@@ -150,13 +156,17 @@ export default function MissionWorkspace() {
               <Panel defaultSize={40} className="overflow-y-auto p-4 border-b border-slate-800">
                 <h3 className="text-xs font-mono text-slate-500 mb-3">LIVE TELEMETRY</h3>
                 <TelemetryDashboard />
+                <div className="mt-4">
+                  <PathPlannerPanel />
+                </div>
               </Panel>
 
               <HorizontalResizeHandle />
 
-              {/* Bottom Right: XAI Decisions */}
+              {/* Bottom Right: XAI Decisions & Data Pipeline */}
               <Panel defaultSize={60} className="overflow-y-auto p-4 bg-[#030712]">
-                <h3 className="text-xs font-mono text-blue-500 mb-3 tracking-widest">EXPLAINABLE AI FEED</h3>
+                <ISRODataTerminal />
+                <h3 className="text-xs font-mono text-blue-500 mb-3 mt-4 tracking-widest">EXPLAINABLE AI FEED</h3>
                 <div className="flex flex-col gap-4">
                   {decisionHistory.map((decision) => (
                     <ExplanationCard key={decision.id} decision={decision} />

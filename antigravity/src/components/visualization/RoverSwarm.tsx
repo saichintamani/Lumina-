@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTelemetryStore } from '@/lib/memory/useTelemetryStore';
 import { SwarmEngine } from '@/lib/physics/boidsEngine';
+import SwarmCommLinks from './SwarmCommLinks';
 
 export default function RoverSwarm() {
   const meshRef = useRef<THREE.InstancedMesh>(null);
@@ -49,16 +50,20 @@ export default function RoverSwarm() {
   if (!swarmActive) return null;
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, BOID_COUNT]}>
-      {/* Sleek triangular drone shape */}
-      <coneGeometry args={[0.02, 0.08, 3]} />
-      {/* Glowing material */}
-      <meshStandardMaterial 
-        color="#00ffff" 
-        emissive="#00ffff" 
-        emissiveIntensity={2} 
-        toneMapped={false}
-      />
-    </instancedMesh>
+    <>
+      <instancedMesh ref={meshRef} args={[undefined, undefined, BOID_COUNT]}>
+        {/* Sleek triangular drone shape */}
+        <coneGeometry args={[0.02, 0.08, 3]} />
+        {/* Glowing material */}
+        <meshStandardMaterial 
+          color="#00ffff" 
+          emissive="#00ffff" 
+          emissiveIntensity={2} 
+          toneMapped={false}
+        />
+      </instancedMesh>
+      {/* Laser communication mesh network between drones */}
+      <SwarmCommLinks swarmRef={meshRef} />
+    </>
   );
 }

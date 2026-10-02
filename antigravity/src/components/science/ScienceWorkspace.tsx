@@ -10,6 +10,8 @@ import SpectroscopyPanel from '@/components/science/SpectroscopyPanel';
 import CommandPalette from '@/components/operations/CommandPalette';
 import GlitchOverlay from '@/components/effects/GlitchOverlay';
 import { useTelemetryAudio } from '@/lib/audio/useTelemetryAudio';
+import ScaleMagnifier from '@/components/science/ScaleMagnifier';
+import IceProbabilityPanel from '@/components/science/IceProbabilityPanel';
 
 const ScientificDigitalTwin = dynamic(() => import('@/components/visualization/ScientificDigitalTwin'), { 
   ssr: false,
@@ -94,10 +96,15 @@ export default function ScienceWorkspace() {
                 Possible subsurface structural formation. Recommend deploying SAR sweep for higher resolution.
               </p>
             </div>
+
+            <IceProbabilityPanel />
           </Panel>
 
         </Group>
       </div>
+      
+      {/* SIH26166 Tooling */}
+      <ScaleMagnifier />
 
     </div>
   );

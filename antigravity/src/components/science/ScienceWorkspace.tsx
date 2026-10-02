@@ -15,6 +15,8 @@ import IceProbabilityPanel from '@/components/science/IceProbabilityPanel';
 import DeepCoreDrill from '@/components/science/DeepCoreDrill';
 import MatchingSandbox from '@/components/science/MatchingSandbox';
 import ShadowMetricsPanel from '@/components/science/ShadowMetricsPanel';
+import AttentionMapVisualizer from '@/components/science/AttentionMapVisualizer';
+import CoRegistrationEngine from '@/components/science/CoRegistrationEngine';
 
 const ScientificDigitalTwin = dynamic(() => import('@/components/visualization/ScientificDigitalTwin'), { 
   ssr: false,
@@ -108,6 +110,14 @@ export default function ScienceWorkspace() {
 
             <div className="mt-4">
               <MatchingSandbox />
+            </div>
+
+            <div className="mt-4">
+              <AttentionMapVisualizer />
+            </div>
+
+            <div className="mt-4">
+              <CoRegistrationEngine />
             </div>
 
             <div className="mt-4">
